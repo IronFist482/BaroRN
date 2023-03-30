@@ -18,7 +18,22 @@ const Tab = createBottomTabNavigator();
 export default function MainNavigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator initialRouteName="Home">
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          tabBarStyle: {
+            backgroundColor: "#fff",
+            borderTopColor: "transparent",
+            height: 60,
+            paddingBottom: 5,
+            paddingTop: 5,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            marginBottom: 5,
+          },
+        }}
+      >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
