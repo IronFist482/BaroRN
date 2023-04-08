@@ -13,7 +13,7 @@ const Analytics = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#2584A0",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -7,14 +7,14 @@ import {
   Ionicons,
   Entypo,
 } from "@expo/vector-icons";
-import { Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 // Screens
 import HomeScreen from "@screens/Home/Home";
-import MainScreen from "@screens/Main/Main";
 import ConfigScreen from "@screens/Config/Config";
 import FrequentsScreen from "@screens/Frequents/Frequents";
 import AnalyticsScreen from "@screens/Analytics/Analytics";
 const Tab = createBottomTabNavigator();
+
 export default function MainNavigator() {
   return (
     <NavigationContainer>
@@ -23,14 +23,18 @@ export default function MainNavigator() {
         screenOptions={{
           tabBarStyle: {
             backgroundColor: "#fff",
-            borderTopColor: "transparent",
+            borderColor: "transparent",
             height: 60,
-            paddingBottom: 5,
-            paddingTop: 5,
           },
-          tabBarLabelStyle: {
-            fontSize: 12,
-            marginBottom: 5,
+          headerStyle: {
+            backgroundColor: "#fff",
+            height: 100,
+          },
+          headerTitleStyle: {
+            fontWeight: "700",
+            fontSize: 23,
+            marginLeft: 10,
+            color: "#044C7C",
           },
         }}
       >
@@ -38,16 +42,12 @@ export default function MainNavigator() {
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarLabel: ({ focused }) => (
-              <Text style={{ color: focused ? "#044C7C" : "#0003" }}>
-                Inicio
-              </Text>
-            ),
+            tabBarLabel: () => <></>,
             tabBarIcon: ({ focused }) => (
               <MaterialCommunityIcons
                 name="home"
                 size={30}
-                style={{ color: focused ? "#044C7C" : "#0003" }}
+                style={{ color: focused ? "#044C7C" : "#0008" }}
               />
             ),
           }}
@@ -56,16 +56,12 @@ export default function MainNavigator() {
           name="Analytics"
           component={AnalyticsScreen}
           options={{
-            tabBarLabel: ({ focused }) => (
-              <Text style={{ color: focused ? "#044C7C" : "#0003" }}>
-                Análisis
-              </Text>
-            ),
+            tabBarLabel: () => <></>,
             tabBarIcon: ({ focused }) => (
               <Entypo
                 name="bar-graph"
                 size={24}
-                style={{ color: focused ? "#044C7C" : "#0003" }}
+                style={{ color: focused ? "#044C7C" : "#0008" }}
               />
             ),
           }}
@@ -74,17 +70,13 @@ export default function MainNavigator() {
           name="Frequents"
           component={FrequentsScreen}
           options={{
-            tabBarLabel: ({ focused }) => (
-              <Text style={{ color: focused ? "#044C7C" : "#0003" }}>
-                Frecuentes
-              </Text>
-            ),
+            tabBarLabel: () => <></>,
             tabBarIcon: ({ focused }) => (
               <Ionicons
                 name="time"
                 size={24}
                 color="black"
-                style={{ color: focused ? "#044C7C" : "#0003" }}
+                style={{ color: focused ? "#044C7C" : "#0008" }}
               />
             ),
           }}
@@ -93,36 +85,13 @@ export default function MainNavigator() {
           name="Config"
           component={ConfigScreen}
           options={{
-            tabBarLabel: ({ focused }) => (
-              <Text style={{ color: focused ? "#044C7C" : "#0003" }}>
-                Config
-              </Text>
-            ),
+            tabBarLabel: () => <></>,
             tabBarIcon: ({ focused }) => (
               <MaterialIcons
                 name="settings"
                 size={24}
                 color="black"
-                style={{ color: focused ? "#044C7C" : "#0003" }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Signout"
-          component={MainScreen}
-          options={{
-            tabBarLabel: ({ focused }) => (
-              <Text style={{ color: focused ? "#044C7C" : "#0003" }}>
-                Salir
-              </Text>
-            ),
-            tabBarIcon: ({ focused }) => (
-              <MaterialIcons
-                name="logout"
-                size={24}
-                color="black"
-                style={{ color: focused ? "#044C7C" : "#0003" }}
+                style={{ color: focused ? "#044C7C" : "#0008" }}
               />
             ),
           }}
