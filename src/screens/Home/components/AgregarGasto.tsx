@@ -1,20 +1,61 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Modal,
+} from "react-native";
+import { useState } from "react";
 const AgregarGasto = () => {
+  const [showAlert, setShowAlert] = useState(false);
+  const showAlertHandler = () => {
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 1000);
+  };
+
   return (
-    <View style={styles.containerSection}>
-      <View style={styles.containerTitle}>
-        <Text style={styles.styleTitle}>Agregar Gasto</Text>
+    <>
+      <View style={styles.containerSection}>
+        <View style={styles.containerTitle}>
+          <Text style={styles.styleTitle}>Agregar Gasto</Text>
+        </View>
+        <View style={styles.containerRecent}>
+          <TextInput style={styles.item} placeholder="Nombre" maxLength={20} />
+          <TextInput style={styles.item} placeholder="Descripción" />
+          <TextInput
+            style={styles.item}
+            placeholder="Monto"
+            keyboardType="numeric"
+          />
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={showAlertHandler}
+          >
+            <Text style={styles.textButtonStyle}>Agregar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.containerRecent}>
-        <TextInput style={styles.item} placeholder="Nombre" maxLength={20} />
-        <TextInput style={styles.item} placeholder="Descripción" />
-        <TextInput
-          style={styles.item}
-          placeholder="Monto"
-          keyboardType="numeric"
-        />
-      </View>
-    </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showAlert}
+        onRequestClose={() => {
+          setShowAlert(!showAlert);
+        }}
+      >
+        <View style={styles.alertContainer}>
+          <View style={styles.alertContainerContent}>
+            <Text style={styles.alertText}>
+              ¡Se ha agregado el gasto con éxito!
+            </Text>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -67,6 +108,44 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     color: "#044C7C",
+  },
+  buttonStyle: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: "#2584A0",
+    borderRadius: 5,
+    padding: 10,
+    width: "50%",
+  },
+  textButtonStyle: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  alertContainer: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  alertContainerContent: {
+    height: 100,
+    width: "80%",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    alignSelf: "center",
+    marginTop: "auto",
+    marginBottom: "auto",
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#2584A0",
+    borderWidth: 5,
+    padding: 10,
+  },
+  alertText: {
+    color: "#2584A0",
+    fontSize: 20,
+    textAlign: "center",
   },
 });
 

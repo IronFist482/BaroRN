@@ -33,6 +33,13 @@ const Home = () => {
       description: "Café con leche",
       amount: 499.99,
     },
+    {
+      id: 4,
+      icon: <Fontisto name="nav-icon-list-a" size={24} color="#2584A0" />,
+      name: "Café",
+      description: "Café con leche",
+      amount: 100,
+    },
   ];
 
   return (
