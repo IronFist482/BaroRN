@@ -6,7 +6,6 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
