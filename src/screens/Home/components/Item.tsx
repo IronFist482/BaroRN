@@ -113,6 +113,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
+    elevation: 4,
   },
   containerIconItem: {
     height: 50,

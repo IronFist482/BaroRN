@@ -221,7 +221,7 @@ const ContentInfo = ({ weeks }: any) => {
                         style={styles.styleTextGastoComparativo}
                       >{`${dayBeforeName}: $${dayBeforeBalance} $${dayBalance}`}</Text>
                       <Text>
-                        Gastaste más que ayer {`${dayBeforeName.toLowerCase()}`}
+                        Gastaste más que el {`${dayBeforeName.toLowerCase()}`}
                       </Text>
                     </>
                   )}
@@ -233,12 +233,6 @@ const ContentInfo = ({ weeks }: any) => {
           </View>
         </View>
       )}
-
-      <View>
-        <VictoryChart width={350} theme={VictoryTheme.material}>
-          <VictoryBar data={data} x="quarter" y="earnings" />
-        </VictoryChart>
-      </View>
     </>
   );
 };
@@ -258,6 +252,8 @@ const styles = StyleSheet.create({
     width: "17%",
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 20,
   },
   styleTitleWeek: {
     fontSize: 35,
@@ -306,7 +302,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 20,
     alignSelf: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "#76BCD0",
     paddingTop: 10,
     paddingBottom: 10,
   },

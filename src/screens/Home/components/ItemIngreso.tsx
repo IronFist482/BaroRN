@@ -8,21 +8,27 @@ const ItemIngreso = (props: {
 }) => {
   return (
     <View style={styles.containerIngreso}>
-      <Text>{props.tipo}</Text>
-      <Text>{props.description}</Text>
-      <Text>{props.amount}</Text>
+      <View>
+        <Text>{props.tipo}</Text>
+      </View>
+      <View>
+        <Text>{props.description}</Text>
+      </View>
+      <View>
+        <Text>{props.amount}</Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   containerIngreso: {
-    height: "auto",
+    height: 100,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 40,
     borderRadius: 20,
     padding: 10,
     alignSelf: "center",

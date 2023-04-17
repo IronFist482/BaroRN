@@ -50,7 +50,7 @@ const ModalIngresos = (props: { data: any[] }) => {
               style={styles.containerButtonModal}
               onPress={() => setModalVisibility(false)}
             >
-              <Text>Cerrar</Text>
+              <Text style={styles.styleTextButton}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   containerButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "#9CC7D3",
     alignItems: "center",
     justifyContent: "center",
     width: 100,
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 30,
     alignSelf: "center",
+    elevation: 6,
   },
   styleTextModalIngreso: {
     color: "#fff",
@@ -116,25 +117,30 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   containerIngresos: {
-    height: "80%",
+    height: "70%",
     width: "80%",
     marginTop: 30,
-    marginBottom: 30,
+    marginBottom: 20,
     borderRadius: 20,
-    padding: 15,
+    padding: 20,
     backgroundColor: "#2584A0",
     marginLeft: "auto",
     marginRight: "auto",
   },
   containerButtonModal: {
-    backgroundColor: "red",
+    backgroundColor: "#2584A0",
     alignItems: "center",
     justifyContent: "center",
     width: 100,
     height: 40,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 30,
     alignSelf: "center",
+  },
+  styleTextButton: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
 

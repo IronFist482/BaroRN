@@ -134,14 +134,15 @@ const styles = StyleSheet.create({
   containerBalance: {
     height: "auto",
     width: "80%",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "#5FAABF",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 50,
     borderRadius: 20,
-    borderColor: "rgba(255, 255, 255, 0.5)",
+    borderColor: "#BFD4DA",
     borderWidth: 5,
     alignSelf: "center",
+    elevation: 5,
   },
   containerTextBalance: {
     height: 60,
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     alignSelf: "center",
+    elevation: 10,
   },
   containerLine: {
     height: 5,
@@ -192,6 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 10,
     alignSelf: "center",
+    elevation: 5,
   },
 });
 

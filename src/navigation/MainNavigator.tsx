@@ -23,101 +23,99 @@ const Tab = createBottomTabNavigator();
 
 export default function MainNavigator() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          tabBarStyle: {
-            backgroundColor: "#fff",
-            borderColor: "transparent",
-            height: 60,
-          },
-          headerStyle: {
-            backgroundColor: "#fff",
-            height: 100,
-          },
-          headerTitleStyle: {
-            fontWeight: "700",
-            fontSize: 23,
-            marginLeft: 10,
-            color: "#044C7C",
-          },
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderColor: "transparent",
+          height: 60,
+        },
+        headerStyle: {
+          backgroundColor: "#fff",
+          height: 100,
+        },
+        headerTitleStyle: {
+          fontWeight: "700",
+          fontSize: 23,
+          marginLeft: 10,
+          color: "#044C7C",
+        },
+      }}
+    >
+      <Tab.Screen
+        name="Inicio"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) => (
+            <MaterialCommunityIcons
+              name="home"
+              size={30}
+              style={{ color: focused ? "#044C7C" : "#0008" }}
+            />
+          ),
         }}
-      >
-        <Tab.Screen
-          name="Inicio"
-          component={HomeScreen}
-          options={{
-            tabBarLabel: () => <></>,
-            tabBarIcon: ({ focused }) => (
-              <MaterialCommunityIcons
-                name="home"
-                size={30}
-                style={{ color: focused ? "#044C7C" : "#0008" }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Análisis"
-          component={AnalyticsScreen}
-          options={{
-            tabBarLabel: () => <></>,
-            tabBarIcon: ({ focused }) => (
-              <Entypo
-                name="bar-graph"
-                size={24}
-                style={{ color: focused ? "#044C7C" : "#0008" }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Frecuentes"
-          component={FrequentsScreen}
-          options={{
-            tabBarLabel: () => <></>,
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="time"
-                size={24}
-                color="black"
-                style={{ color: focused ? "#044C7C" : "#0008" }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Plan de ahorro"
-          component={SavingScreen}
-          options={{
-            tabBarLabel: () => <></>,
-            tabBarIcon: ({ focused }) => (
-              <Entypo
-                name="wallet"
-                size={24}
-                color="black"
-                style={{ color: focused ? "#044C7C" : "#0008" }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Configuración"
-          component={ConfigScreen}
-          options={{
-            tabBarLabel: () => <></>,
-            tabBarIcon: ({ focused }) => (
-              <MaterialIcons
-                name="settings"
-                size={24}
-                color="black"
-                style={{ color: focused ? "#044C7C" : "#0008" }}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+      />
+      <Tab.Screen
+        name="Análisis"
+        component={AnalyticsScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) => (
+            <Entypo
+              name="bar-graph"
+              size={24}
+              style={{ color: focused ? "#044C7C" : "#0008" }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Frecuentes"
+        component={FrequentsScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="time"
+              size={24}
+              color="black"
+              style={{ color: focused ? "#044C7C" : "#0008" }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Plan de ahorro"
+        component={SavingScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) => (
+            <Entypo
+              name="wallet"
+              size={24}
+              color="black"
+              style={{ color: focused ? "#044C7C" : "#0008" }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Configuración"
+        component={ConfigScreen}
+        options={{
+          tabBarLabel: () => <></>,
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="settings"
+              size={24}
+              color="black"
+              style={{ color: focused ? "#044C7C" : "#0008" }}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }

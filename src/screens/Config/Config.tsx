@@ -1,10 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Config = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("SplashScreen")}>
+        <Text>Open up App.tsx to start working on your app!</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </ScrollView>
   );
