@@ -74,7 +74,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 30,
     alignSelf: "center",
-    elevation: 6,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   styleTextModalIngreso: {
     color: "#fff",
@@ -90,10 +96,10 @@ const styles = StyleSheet.create({
   contentModal: {
     minHeight: "auto",
     maxHeight: "80%",
-    width: "80%",
+    width: "86%",
     backgroundColor: "#ffffff",
     borderRadius: 16,
-    marginHorizontal: "10%",
+    marginHorizontal: "7%",
     marginVertical: "20%",
   },
   modalTitle: {
@@ -118,12 +124,10 @@ const styles = StyleSheet.create({
   },
   containerIngresos: {
     height: "70%",
-    width: "80%",
+    width: "100%",
     marginTop: 30,
     marginBottom: 20,
-    borderRadius: 20,
-    padding: 20,
-    backgroundColor: "#2584A0",
+    borderRadius: 1,
     marginLeft: "auto",
     marginRight: "auto",
   },

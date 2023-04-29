@@ -11,7 +11,7 @@ export default function Splash() {
       // Agrega un setTimeout para que después de 2 segundos se muestre la pantalla principal
       setTimeout(() => {
         // Navega a la pantalla principal
-        navigation.navigate("MainNavigator");
+        navigation.navigate("Signin");
       }, 2000);
 
       // Devuelve una función para cancelar el temporizador si la pantalla pierde el enfoque

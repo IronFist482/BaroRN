@@ -7,7 +7,7 @@ import {
   Ionicons,
   Entypo,
 } from "@expo/vector-icons";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Platform } from "react-native";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -29,24 +29,25 @@ export default function MainNavigator() {
         tabBarStyle: {
           backgroundColor: "#fff",
           borderColor: "transparent",
-          height: 60,
+          height: Platform.OS === "android" ? 60 : 100,
         },
         headerStyle: {
           backgroundColor: "#fff",
-          height: 100,
+          height: Platform.OS === "android" ? 100 : 100,
         },
         headerTitleStyle: {
           fontWeight: "700",
-          fontSize: 23,
+          fontSize: 28,
           marginLeft: 10,
           color: "#044C7C",
         },
       }}
     >
       <Tab.Screen
-        name="Inicio"
+        name="Home"
         component={HomeScreen}
         options={{
+          title: "Inicio",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
@@ -58,9 +59,10 @@ export default function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Análisis"
+        name="Analytics"
         component={AnalyticsScreen}
         options={{
+          title: "Análisis",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
             <Entypo
@@ -72,9 +74,10 @@ export default function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Frecuentes"
+        name="Frequents"
         component={FrequentsScreen}
         options={{
+          title: "Frecuentes",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -87,9 +90,10 @@ export default function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Plan de ahorro"
+        name="Saving"
         component={SavingScreen}
         options={{
+          title: "Plan de ahorro",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
             <Entypo
@@ -102,9 +106,10 @@ export default function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Configuración"
+        name="Configuration"
         component={ConfigScreen}
         options={{
+          title: "Configuración",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
             <MaterialIcons

@@ -77,6 +77,7 @@ const ContentInfo = ({ weeks }: any) => {
       setDayDate(days[visibilityDay - 1].date);
       setDayBalance(days[visibilityDay - 1].balance);
       if (week > 0) {
+        setInfoCompleteBeforeWeek(weeks[week - 1].infoWeek.daysAllWeek);
         if (visibilityDay == 1) {
           setDayBeforeName(daysBefore[6].name);
           setDayBeforeDate(daysBefore[6].date);

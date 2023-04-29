@@ -93,29 +93,24 @@ const Home = () => {
         <ModalIngresos data={arrayIngresos} />
       </View>
       <View style={styles.containerButtons}>
-        <View style={styles.containerButton}>
-          <TouchableOpacity onPress={() => setSection(0)}>
-            <Fontisto name="nav-icon-list-a" size={24} color="#2584A0" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.containerButton}>
-          <TouchableOpacity onPress={() => setSection(1)}>
-            <MaterialCommunityIcons
-              name="cash-minus"
-              size={40}
-              color="#2584A0"
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.containerButton}>
-          <TouchableOpacity onPress={() => setSection(2)}>
-            <MaterialCommunityIcons
-              name="cash-plus"
-              size={40}
-              color="#2584A0"
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.containerButton}
+          onPress={() => setSection(0)}
+        >
+          <Fontisto name="nav-icon-list-a" size={24} color="#2584A0" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setSection(1)}
+          style={styles.containerButton}
+        >
+          <MaterialCommunityIcons name="cash-minus" size={40} color="#2584A0" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setSection(2)}
+          style={styles.containerButton}
+        >
+          <MaterialCommunityIcons name="cash-plus" size={40} color="#2584A0" />
+        </TouchableOpacity>
       </View>
       <View style={styles.containerLine} />
       {section === 0 && <GastosRecientes data={arrayGastos} />}
@@ -129,6 +124,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     height: "100%",
+    width: "100%",
     backgroundColor: "#2584A0",
   },
   containerBalance: {
@@ -142,7 +138,12 @@ const styles = StyleSheet.create({
     borderColor: "#BFD4DA",
     borderWidth: 5,
     alignSelf: "center",
-    elevation: 5,
+    /*shadowOffset: { width: 0, height: 2 },
+    shadowColor: "black",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+*/
+    elevation: 10,
   },
   containerTextBalance: {
     height: 60,
@@ -185,6 +186,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     alignSelf: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "black",
+    shadowOpacity: 0.3,
     elevation: 10,
   },
   containerLine: {
