@@ -7,14 +7,35 @@ import {
   Modal,
   TouchableOpacity,
 } from "react-native";
+import { Input, Icon, ListItem } from "@rneui/themed";
+
+const list2 = [
+  {
+    name: "Salario",
+  },
+  {
+    name: "Honorario",
+  },
+  {
+    name: "Pensión",
+  },
+  {
+    name: "Mesada",
+  },
+];
 
 const AgregarIngreso = () => {
   const [showAlert, setShowAlert] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const showAlertHandler = () => {
     setShowAlert(true);
     setTimeout(() => {
       setShowAlert(false);
     }, 1000);
+  };
+  const [type, setType] = useState("");
+  const election = (l: string) => {
+    console.log(type);
   };
   return (
     <>
@@ -23,13 +44,73 @@ const AgregarIngreso = () => {
           <Text style={styles.styleTitle}>Agregar Ingreso</Text>
         </View>
         <View style={styles.containerRecent}>
-          <TextInput style={styles.item} placeholder="Nombre" maxLength={20} />
-          <TextInput style={styles.item} placeholder="Descripción" />
-          <TextInput
-            style={styles.item}
-            placeholder="Monto"
-            keyboardType="numeric"
-          />
+          <View style={styles.containerInputs}>
+            <ListItem.Accordion
+              content={
+                <>
+                  <Icon
+                    type="feather"
+                    name="bookmark"
+                    size={25}
+                    color="#2584A0"
+                  />
+                  <ListItem.Content>
+                    <ListItem.Title style={styles.styleTextInput}>
+                      {type === "" ? "Ingreso" : type}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                </>
+              }
+              isExpanded={expanded}
+              onPress={() => {
+                setExpanded(!expanded);
+              }}
+              containerStyle={styles.containerTextSelect}
+            >
+              {list2.map((l, i) => (
+                <ListItem
+                  key={i}
+                  onPress={(e) => setType(l.name)}
+                  onPressOut={(e) => setExpanded(!expanded)}
+                >
+                  <ListItem.Content>
+                    <ListItem.Title>{l.name}</ListItem.Title>
+                  </ListItem.Content>
+                </ListItem>
+              ))}
+            </ListItem.Accordion>
+            <Input
+              inputContainerStyle={[
+                styles.containerTextInput,
+                { marginTop: 30 },
+              ]}
+              inputStyle={styles.styleTextInput}
+              placeholder="Descripción"
+              leftIcon={
+                <Icon
+                  type="feather"
+                  name="message-circle"
+                  size={25}
+                  color="#2584A0"
+                />
+              }
+            />
+            <Input
+              inputContainerStyle={styles.containerTextInput}
+              inputStyle={styles.styleTextInput}
+              placeholder="Monto"
+              leftIcon={
+                <Icon
+                  type="feather"
+                  name="dollar-sign"
+                  size={25}
+                  color="#2584A0"
+                />
+              }
+              keyboardType="numeric"
+            />
+          </View>
+
           <TouchableOpacity
             style={styles.buttonStyle}
             onPress={showAlertHandler}
@@ -90,9 +171,10 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 20,
     alignSelf: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "#76BCD0",
     paddingTop: 10,
     paddingBottom: 10,
+    elevation: 6,
   },
   item: {
     height: 50,
@@ -115,6 +197,39 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     width: "50%",
+    elevation: 3,
+  },
+  containerInputs: {
+    marginTop: 20,
+  },
+  containerTextInput: {
+    width: 260,
+    height: 50,
+    elevation: 1,
+    paddingHorizontal: 15,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    alignSelf: "center",
+    backgroundColor: "white",
+  },
+  styleTextInput: {
+    color: "black",
+    paddingHorizontal: 10,
+    fontSize: 20,
+    fontWeight: "normal",
+  },
+  containerTextSelect: {
+    width: 260,
+    height: 50,
+    elevation: 1,
+    paddingHorizontal: 15,
+    fontSize: 20,
+    fontWeight: "normal",
+    paddingVertical: 0,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    alignSelf: "center",
+    backgroundColor: "white",
   },
   textButtonStyle: {
     color: "#FFFFFF",

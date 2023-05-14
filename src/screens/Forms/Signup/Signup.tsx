@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
 } from "react-native";
+import { Input, Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
 const Signup = () => {
@@ -29,22 +30,34 @@ const Signup = () => {
         <Text style={styles.styleTextTitle}>Registro</Text>
       </View>
       <View style={styles.containerInputs}>
-        <TextInput
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
           placeholder="Nombre"
-          style={styles.containerTextInput}
-        ></TextInput>
-        <TextInput
+          leftIcon={<Icon type="feather" name="user" size={20} color="black" />}
+        />
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
           placeholder="Correo Electrónico"
-          style={styles.containerTextInput}
-        ></TextInput>
-        <TextInput
+          leftIcon={
+            <Icon type="feather" name="at-sign" size={20} color="black" />
+          }
+        />
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
           placeholder="Contraseña"
-          style={styles.containerTextInput}
-        ></TextInput>
-        <TextInput
-          placeholder="Confirmar Contraseña"
-          style={styles.containerTextInput}
-        ></TextInput>
+          leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
+          secureTextEntry={true}
+        />
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
+          placeholder="Confirmar contraseña"
+          leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
+          secureTextEntry={true}
+        />
         <TouchableOpacity
           style={styles.containerButtonMain}
           onPress={handlePressImage}
@@ -89,25 +102,24 @@ const styles = StyleSheet.create({
   containerInputs: {
     height: "auto",
     width: 300,
-    marginTop: 20,
-    marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    paddingHorizontal: 10,
-  },
-  containerTextInput: {
-    height: 50,
-    width: 280,
-    backgroundColor: "#DCDCDC",
-    borderRadius: 30,
-    marginTop: 20,
+    marginTop: 50,
     marginBottom: 0,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    paddingHorizontal: 20,
-    fontSize: 15,
+  },
+  containerTextInput: {
+    width: 280,
+    elevation: 1,
+    paddingHorizontal: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  styleTextInput: {
+    color: "black",
+    paddingHorizontal: 10,
+    fontSize: 17,
+    fontWeight: "normal",
   },
   containerQuestion: {
     height: 50,
@@ -132,7 +144,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 280,
     borderRadius: 30,
-    marginTop: 50,
+    marginTop: 20,
     marginBottom: 0,
     alignItems: "center",
     justifyContent: "center",

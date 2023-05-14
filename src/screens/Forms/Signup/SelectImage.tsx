@@ -32,6 +32,7 @@ const SelectImage = () => {
       aspect: [3, 3],
       quality: 1,
     });
+
     if (!result.canceled) {
       // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un Image component
       setImage(result.uri);

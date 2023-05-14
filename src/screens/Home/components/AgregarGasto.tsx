@@ -7,7 +7,9 @@ import {
   Alert,
   Modal,
 } from "react-native";
+import { Input, Icon } from "@rneui/themed";
 import { useState } from "react";
+import { rotationHandlerName } from "react-native-gesture-handler/lib/typescript/handlers/RotationGestureHandler";
 const AgregarGasto = () => {
   const [showAlert, setShowAlert] = useState(false);
   const showAlertHandler = () => {
@@ -24,13 +26,43 @@ const AgregarGasto = () => {
           <Text style={styles.styleTitle}>Agregar Gasto</Text>
         </View>
         <View style={styles.containerRecent}>
-          <TextInput style={styles.item} placeholder="Nombre" maxLength={20} />
-          <TextInput style={styles.item} placeholder="Descripción" />
-          <TextInput
-            style={styles.item}
-            placeholder="Monto"
-            keyboardType="numeric"
-          />
+          <View style={styles.containerInputs}>
+            <Input
+              inputContainerStyle={styles.containerTextInput}
+              inputStyle={styles.styleTextInput}
+              placeholder="Nombre"
+              leftIcon={
+                <Icon type="feather" name="tag" size={25} color="#2584A0" />
+              }
+            />
+            <Input
+              inputContainerStyle={styles.containerTextInput}
+              inputStyle={styles.styleTextInput}
+              placeholder="Descripción"
+              leftIcon={
+                <Icon
+                  type="feather"
+                  name="message-circle"
+                  size={25}
+                  color="#2584A0"
+                />
+              }
+            />
+            <Input
+              inputContainerStyle={styles.containerTextInput}
+              inputStyle={styles.styleTextInput}
+              placeholder="Monto"
+              leftIcon={
+                <Icon
+                  type="feather"
+                  name="dollar-sign"
+                  size={25}
+                  color="#2584A0"
+                />
+              }
+            />
+          </View>
+
           <TouchableOpacity
             style={styles.buttonStyle}
             onPress={showAlertHandler}
@@ -91,9 +123,29 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 20,
     alignSelf: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "#76BCD0",
     paddingTop: 10,
     paddingBottom: 10,
+    elevation: 6,
+  },
+  containerInputs: {
+    marginTop: 20,
+  },
+  containerTextInput: {
+    width: 260,
+    height: 50,
+    elevation: 1,
+    paddingHorizontal: 15,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    alignSelf: "center",
+    backgroundColor: "white",
+  },
+  styleTextInput: {
+    color: "black",
+    paddingHorizontal: 10,
+    fontSize: 20,
+    fontWeight: "normal",
   },
   item: {
     height: 50,
@@ -110,18 +162,20 @@ const styles = StyleSheet.create({
     color: "#044C7C",
   },
   buttonStyle: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 15,
     backgroundColor: "#2584A0",
     borderRadius: 5,
     padding: 10,
     width: "50%",
+    elevation: 3,
   },
   textButtonStyle: {
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    elevation: 2,
   },
   alertContainer: {
     height: "100%",

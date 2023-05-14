@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { Input, Icon } from "@rneui/themed";
+
 import {
   Text,
   View,
@@ -29,14 +31,21 @@ const Signin = () => {
         <Text style={styles.styleTextTitle}>Iniciar Sesión</Text>
       </View>
       <View style={styles.containerInputs}>
-        <TextInput
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
           placeholder="Correo Electrónico"
-          style={styles.containerTextInput}
-        ></TextInput>
-        <TextInput
+          leftIcon={
+            <Icon type="feather" name="at-sign" size={20} color="black" />
+          }
+        />
+        <Input
+          inputContainerStyle={styles.containerTextInput}
+          inputStyle={styles.styleTextInput}
           placeholder="Contraseña"
-          style={styles.containerTextInput}
-        ></TextInput>
+          secureTextEntry={true}
+          leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
+        />
         <View style={styles.containerQuestion}>
           <Text style={styles.styleQuestion}>¿Olvidaste tu contraseña?</Text>
         </View>
@@ -83,33 +92,32 @@ const styles = StyleSheet.create({
   containerInputs: {
     height: "auto",
     width: 300,
-    marginTop: 20,
+    marginTop: 80,
     marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    paddingHorizontal: 10,
   },
   containerTextInput: {
-    height: 50,
     width: 280,
-    backgroundColor: "#DCDCDC",
-    borderRadius: 30,
-    marginTop: 20,
-    marginBottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    paddingHorizontal: 20,
-    fontSize: 15,
+    elevation: 1,
+    paddingHorizontal: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  styleTextInput: {
+    color: "black",
+    paddingHorizontal: 10,
+    fontSize: 17,
+    fontWeight: "normal",
   },
   containerQuestion: {
-    height: 50,
+    height: 20,
     width: 280,
     backgroundColor: "#fff",
     borderRadius: 30,
-    marginTop: 20,
-    marginBottom: 0,
+    marginTop: 0,
+    marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
