@@ -1,11 +1,11 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 
 import { store } from "@store/index";
-import CONFIG from "@utils/config/config";
+import CONFIG from "@utils/config";
 
 axios.defaults.withCredentials = true;
 
-type PATHS = "gastos" | "frecuentes" | "users";
+type PATHS = "gastos" | "frecuentes" | "users" | "ingresos" | "ia";
 
 const getRequestInstance = (path: PATHS): AxiosInstance => {
   const request: AxiosInstance = axios.create({
@@ -16,7 +16,7 @@ const getRequestInstance = (path: PATHS): AxiosInstance => {
 
   request.interceptors.request.use(
     (config) => {
-      const token = store.getState().session.token;
+      const token = store.getState().user.token;
       if (config.headers && token) {
         config.headers.token = token ?? "";
       }

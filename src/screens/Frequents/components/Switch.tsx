@@ -18,7 +18,7 @@ const Switch = ({ value, onValueChange }: any) => {
       toValue: isEnabled ? 0 : 2.4,
       duration: 500,
       useNativeDriver: false,
-    }).start(() => onValueChange(isEnabled));
+    }).start(() => onValueChange(!isEnabled));
   };
 
   const interpolatedColorAnimation = animation.interpolate({

@@ -5,15 +5,18 @@ import Switch from "./components/Switch";
 import ItemFrequents from "./components/ItemFrequents";
 
 const Frequents = () => {
-  const [value, setValue] = useState(true);
+  const [value, setValue] = useState(false);
 
+  const onValueChange = (val: boolean) => {
+    setValue(val);
+  };
   useEffect(() => {
     console.log(value);
   }, [value]);
 
   return (
     <ScrollView style={styles.container}>
-      {value == true ? (
+      {value == false ? (
         <>
           <View style={styles.containerTitleGastosFrecuentes}>
             <Text style={styles.styleTitleGastosFrecuentes}>
@@ -27,10 +30,8 @@ const Frequents = () => {
         </View>
       )}
       <Switch value={value} onValueChange={setValue} />
-      {value == true ? (
+      {value == false ? (
         <>
-          <ItemFrequents />
-          <ItemFrequents />
           <ItemFrequents />
           <ItemFrequents />
         </>

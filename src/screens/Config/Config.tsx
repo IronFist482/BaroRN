@@ -10,13 +10,21 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { LogOut, UploadPhoto } from "@api/UserServices";
+import { useDispatch, useSelector } from "react-redux";
+import { editPhoto, removeToken } from "@store/user/user-slice";
+import { clearGastos } from "@store/gastos/gastos-slice";
+import { RootState } from "@store/index";
 
 const Config = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const [image, setImage] = useState(null);
+  const { user } = useSelector((state: RootState) => state.user);
+
+  const [image, setImage] = useState(user.dataUser.datPhoto);
 
   const handlePressImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -35,6 +43,14 @@ const Config = () => {
       setImage(result.uri);
     }
   };
+  const handleLogOut = useCallback(async () => {
+    await LogOut().then(() => {
+      dispatch(removeToken());
+      dispatch(clearGastos());
+    });
+    navigation.navigate("SplashScreen");
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.containerOptions}>
@@ -42,7 +58,7 @@ const Config = () => {
           style={styles.containerSelectorImage}
           onPress={handlePressImagePicker}
         >
-          {image !== null ? (
+          {image !== "" ? (
             <Image
               source={{ uri: image }}
               style={{
@@ -60,25 +76,23 @@ const Config = () => {
           )}
         </TouchableOpacity>
         <View style={styles.containerTextName}>
-          <Text style={styles.styleTextName}>Ian Cerna</Text>
+          <Text style={styles.styleTextName}>
+            Bienvenido{" "}
+            {user.dataUser.datName.charAt(0).toUpperCase() +
+              user.dataUser.datName.slice(1)}
+          </Text>
         </View>
         <View style={styles.containerButtons}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("SplashScreen")}
-            style={styles.containerButtonProfile}
-          >
+          <TouchableOpacity style={styles.containerButtonProfile}>
             <Text style={styles.styleButtonProfile}>Perfil</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("SplashScreen")}
-            style={styles.containerButtonAccount}
-          >
+          <TouchableOpacity style={styles.containerButtonAccount}>
             <Text style={styles.styleButtonAccount}>Cuenta</Text>
           </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate("SplashScreen")}
+        onPress={handleLogOut}
         style={styles.containerButtonExit}
       >
         <Text style={styles.styleButtonExit}>Cerrar Sesión</Text>
@@ -132,7 +146,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   styleTextName: {
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     color: "#2584A0",

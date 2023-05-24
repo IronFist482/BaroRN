@@ -30,10 +30,12 @@ export default function MainNavigator() {
           backgroundColor: "#fff",
           borderColor: "transparent",
           height: Platform.OS === "android" ? 60 : 100,
+          elevation: 10,
         },
         headerStyle: {
           backgroundColor: "#fff",
           height: Platform.OS === "android" ? 100 : 100,
+          elevation: 10,
         },
         headerTitleStyle: {
           fontWeight: "700",

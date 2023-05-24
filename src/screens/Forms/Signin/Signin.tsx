@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
 import { Input, Icon } from "@rneui/themed";
-
+import { SignInService } from "@api/UserServices";
+import { SignInParams } from "@utils/types/User";
+import { ErrorSignin } from "@utils/types/Error/ErrorSignin";
 import {
   Text,
   View,
@@ -10,15 +13,70 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import { setToken, setUser } from "@store/user/user-slice";
+import { RootState } from "@store/index";
 
 const Signin = () => {
   const navigation = useNavigation();
-
-  const handlePressHome = () => {
-    navigation.navigate("MainNavigator");
-  };
+  const dispatch = useDispatch();
+  const [params, setParams] = useState<SignInParams>({
+    contraseña: "",
+    correo: "",
+  });
   const handlePressSignup = () => {
-    navigation.navigate("Signup");
+    navigation.navigate("Signup", {});
+  };
+  const [messageError, setMessageError] = useState<ErrorSignin>({
+    messageError: "",
+    messageErrorEmail: "",
+    messageErrorPassword: "",
+  });
+
+  let user = useSelector((state: RootState) => state.user);
+
+  const handleSignIn = useCallback(async () => {
+    console.log(params);
+    const { data, message, ok } = await SignInService(params);
+    console.log(message);
+    setMessageError({ ...messageError, messageError: message });
+    asignacionError(message);
+    if (!ok || data == null) return;
+    dispatch(setUser(data.user));
+    dispatch(setToken(data.token));
+    navigation.navigate("MainNavigator");
+  }, [params]);
+
+  useEffect(() => {
+    if (user.token !== "") {
+      navigation.navigate("MainNavigator");
+    }
+  }, []);
+
+  const asignacionError = (m: string) => {
+    setMessageError({ ...messageError, messageError: m });
+    if (m == "Faltan datos") {
+      setMessageError({
+        ...messageError,
+        messageError: "Faltan Datos",
+        messageErrorEmail: "Faltan Datos",
+        messageErrorPassword: "Faltan Datos",
+      });
+    } else if (m == "Correo o contraseña incorrectos") {
+      setMessageError({
+        ...messageError,
+        messageError: "Correo o contraseña incorrectos",
+        messageErrorEmail: "El usuario no coincide",
+        messageErrorPassword: "La contraseña no coincide",
+      });
+    } else if (m == "") {
+      setMessageError({
+        ...messageError,
+        messageError: "Error inesperado",
+        messageErrorEmail: "Error inesperado",
+        messageErrorPassword: "Error inesperado",
+      });
+    }
+    console.log(messageError);
   };
 
   return (
@@ -35,23 +93,43 @@ const Signin = () => {
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Correo Electrónico"
+          inputMode="email"
           leftIcon={
             <Icon type="feather" name="at-sign" size={20} color="black" />
           }
+          onChangeText={(text) => setParams({ ...params, correo: text })}
+          value={params.correo}
+          autoCapitalize="none"
         />
+        {messageError.messageError !== "" && (
+          <View style={{ marginTop: -22, marginBottom: 20 }}>
+            <Text style={{ color: "red" }}>
+              {messageError.messageErrorEmail}
+            </Text>
+          </View>
+        )}
         <Input
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Contraseña"
           secureTextEntry={true}
+          onChangeText={(text) => setParams({ ...params, contraseña: text })}
+          value={params.contraseña}
           leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
         />
+        {messageError.messageError !== "" && (
+          <View style={{ marginTop: -22, marginBottom: 20 }}>
+            <Text style={{ color: "red" }}>
+              {messageError.messageErrorPassword}
+            </Text>
+          </View>
+        )}
         <View style={styles.containerQuestion}>
           <Text style={styles.styleQuestion}>¿Olvidaste tu contraseña?</Text>
         </View>
         <TouchableOpacity
           style={styles.containerButtonMain}
-          onPress={handlePressHome}
+          onPress={handleSignIn}
         >
           <Text style={styles.styleButtonMain}>Entrar</Text>
         </TouchableOpacity>

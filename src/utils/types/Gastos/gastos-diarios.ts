@@ -1,3 +1,6 @@
+import { Frecuente } from '../Frecuentes'
+import { User } from '../User'
+
 export type GastoDiarioParams = {
   nombre: string
   desc: string
@@ -9,9 +12,21 @@ export type GastoDiarioResponse = {
   newBalance: number
 }
 
+export interface Ingreso {
+  ingId: number
+  ingDate: string
+  ingType: SalarioTypes
+  ingAmount: number
+  ingDescription: string
+
+  user?: Omit<User, 'ingresos'> | null
+}
+
+export type SalarioTypes = 'Salario' | 'Honorario' | 'Pensión' | 'Mesada'
+
 export type CreateIngresoParams = {
   ingreso: string
-  tipo: 'Salario' | 'Honorario' | 'Pensión' | 'Mesada'
+  tipo: SalarioTypes
   desc: string
 }
 
@@ -22,39 +37,47 @@ export type CreateIngresoResponse = {
 
 export type GetGastosResponse = {
   message: string
-  gastos: GeneralTypeGastos[]
+  gastos: (Diario & {
+    day: Omit<Day, 'diarios'>
+  })[]
 }
 
-export interface DayRow {
+export interface Day {
   dayId: number
   dayDate: string
-  semId: number
+
+  semana?: Semana
+  diarios?: Diario[]
+  frecuentes?: Frecuente[]
 }
 
-export interface SemanasRow {
+export interface Semana {
   semId: number
   semStart: string
   semEnd: string
-  usuId: number
+
+  user: Omit<User, 'semanas'>
 }
 
-export interface DiariosRow {
+export interface Diario {
   diaId: number
   diaName: string
   diaDescription: string
   diaAmount: number
-  dayId: number
+  diaIcon: number
+  diaCategory: null
+
+  day?: Omit<Day, 'diarios'>
 }
 
-export type FinalDay = {
-  dayId: number
-  dayDate: string
+export type FinalDay = Omit<Day, 'dayId'> & {
+  dayId?: number
   dayTotal: number
 }
 
 export type GetSemanasResponse = {
   message: string
-  finalDays: (FinalDay | null)[]
+  finalDays: FinalDay[]
   actualWeek: string
   nextWeek: string | null
   prevWeek: string | null
@@ -65,23 +88,19 @@ export type GetSemanasResponse = {
   }
 }
 
+export type GetIngresoResponse = {
+  message: string
+  ingresos: Ingreso[]
+}
+
 export type GetDayResponse = {
-  gastosDia: (SemanasRow & DayRow & DiariosRow)[]
+  gastosDia: Diario[]
   avgDay: number
   diffDays: number
   mostExpensiveCharge: number
   byAmount: [number, number, number, number, number]
   days: { lastDay: null | string; nextDay: null | string }
   dayName: string
-}
-
-export type GeneralTypeGastos = {
-  diaId: number
-  diaName: string
-  diaDescription: string
-  diaAmount: number
-  diaIcon: number
-  dayId: number
 }
 
 export type GeneralTypeDay = {
@@ -94,5 +113,5 @@ export type EditGastoDiarioParams = {
   newMonto: number
   newIcono: number
   newNombre: string
-  id: string
+  id: number
 }

@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   styleTipo: {
     fontWeight: "700",
-    fontSize: 20,
+    fontSize: 24,
     color: "#2584A0",
   },
   containerDescription: {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   styleDescription: {
     textAlign: "center",
     fontWeight: "700",
-    fontSize: 12,
+    fontSize: 15,
     color: "black",
   },
   containerAmount: {
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   styleAmount: {
     textAlign: "center",
     fontWeight: "700",
-    fontSize: 12,
-    color: "black",
+    fontSize: 18,
+    color: "#2584A0",
   },
 });
 

@@ -1,10 +1,24 @@
+import { Frecuente } from '../Frecuentes'
+import { Ingreso, Semana } from '../Gastos/gastos-diarios'
+
+export interface DataUser {
+  datId: number
+  datName: string
+  datPhoto: string
+  datProfile: number
+  datBalance: number
+
+  user?: Omit<User, 'dataUser'> | null
+}
+
 export interface User {
-  id: number
-  email: string
-  name: string
-  photo: string
-  profile: number
-  balance: number
+  usuId: number
+  usuEmail: string
+  dataUser: DataUser
+
+  semanas?: Semana[]
+  ingresos?: Ingreso[]
+  frecuentes?: Frecuente[]
 }
 export interface SignInParams {
   correo: string

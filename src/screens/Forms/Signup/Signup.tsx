@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -6,18 +6,65 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Alert,
 } from "react-native";
 import { Input, Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { SignUpService } from "@api/UserServices";
+import { SignUpParams } from "@utils/types/User";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "@store/session/session-slice";
+import { SignInService } from "@api/UserServices";
+import { SignInParams } from "@utils/types/User";
+import { ErrorMessage } from "@utils/types/Errors";
 
-const Signup = () => {
+const Signup = ({ params }: { params: SignUpParams }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handlePressSignin = () => {
     navigation.navigate("Signin");
   };
-  const handlePressImage = () => {
-    navigation.navigate("SelectImage");
+
+  const [messageError, setMessageError] = useState<ErrorMessage>({
+    messageError: "",
+    messageErrorEmail: "",
+    messageErrorPassword: "",
+  });
+  const [signupParams, setSignupParams] = useState<SignUpParams>({
+    nombre: "",
+    correo: "",
+    contrasena: "",
+    contrasenaConfirmada: "",
+  });
+
+  const [image, setImage] = useState();
+  const [preview, setPreview] = useState<string>();
+
+  const handlePressImage = async () => {
+    if (signupParams.nombre.length < 3) {
+      Alert.alert("El nombre debe tener al menos 3 caracteres");
+      return;
+    }
+    if (signupParams.contrasena != signupParams.contrasenaConfirmada) {
+      Alert.alert("Las contraseñas no coinciden");
+      return;
+    }
+    if (signupParams.contrasena.length < 8) {
+      Alert.alert("La contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+    if (signupParams.contrasena != signupParams.contrasenaConfirmada) {
+      Alert.alert("Las contraseñas no coinciden");
+      return;
+    }
+    Alert.alert(signupParams.nombre);
+    navigation.navigate("SelectImage", {
+      nombre: signupParams.nombre,
+      correo: signupParams.correo,
+      contrasena: signupParams.contrasena,
+      contrasenaConfirmada: signupParams.contrasenaConfirmada,
+    });
   };
 
   return (
@@ -34,12 +81,27 @@ const Signup = () => {
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Nombre"
+          onChangeText={(e) =>
+            setSignupParams({
+              ...signupParams,
+              nombre: e,
+            })
+          }
+          value={signupParams.nombre}
           leftIcon={<Icon type="feather" name="user" size={20} color="black" />}
         />
         <Input
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Correo Electrónico"
+          onChangeText={(e) =>
+            setSignupParams({
+              ...signupParams,
+              correo: e,
+            })
+          }
+          value={signupParams.correo}
+          inputMode="email"
           leftIcon={
             <Icon type="feather" name="at-sign" size={20} color="black" />
           }
@@ -48,6 +110,13 @@ const Signup = () => {
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Contraseña"
+          onChangeText={(e) =>
+            setSignupParams({
+              ...signupParams,
+              contrasena: e,
+            })
+          }
+          value={signupParams.contrasena}
           leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
           secureTextEntry={true}
         />
@@ -55,6 +124,13 @@ const Signup = () => {
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Confirmar contraseña"
+          onChangeText={(e) =>
+            setSignupParams({
+              ...signupParams,
+              contrasenaConfirmada: e,
+            })
+          }
+          value={signupParams.contrasenaConfirmada}
           leftIcon={<Icon type="feather" name="lock" size={20} color="black" />}
           secureTextEntry={true}
         />

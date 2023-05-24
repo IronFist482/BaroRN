@@ -5,13 +5,50 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import { useState } from "react";
 import ItemIngreso from "./ItemIngreso";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@store/index";
+import { getIngresos } from "@api/IngresosServices";
+import { setIngresos } from "@store/ingresos/ingresos-slice";
 
-const ModalIngresos = (props: { data: any[] }) => {
-  const { data } = props;
+const ModalIngresos = ({
+  setSectionUp,
+  reload,
+}: {
+  setSectionUp: Function;
+  reload: number;
+}) => {
+  const dispatch = useDispatch();
+  const ingresos = useSelector((state: RootState) => state.ingresos.ingresos);
+  const inverseIngresos = ingresos.slice().reverse();
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function fetchGastos() {
+    setLoading(true);
+    const { data, ok, message } = await getIngresos({});
+    if (!ok || !data) {
+      setMessage(message);
+      console.log(ingresos);
+      return console.log(message);
+    }
+    console.log(message);
+    setMessage(message);
+    dispatch(setIngresos(data.ingresos));
+  }
+  useEffect(() => {
+    fetchGastos();
+  }, [reload]);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
+
+  const handlerButton = () => {
+    setModalVisibility(false);
+    setSectionUp(2);
+  };
 
   return (
     <View style={styles.containerSection}>
@@ -31,27 +68,55 @@ const ModalIngresos = (props: { data: any[] }) => {
       >
         <View style={styles.containerModal}>
           <View style={styles.contentModal}>
-            <View style={styles.modalTitle}>
-              <Text style={styles.styleTextModal}>Ingresos</Text>
-            </View>
-            <View style={styles.modalLine} />
-            <ScrollView style={styles.containerIngresos}>
-              {data.map((item: any) => (
-                <ItemIngreso
-                  key={item.id}
-                  id={item.id}
-                  tipo={item.tipo}
-                  description={item.description}
-                  amount={item.amount}
-                />
-              ))}
-            </ScrollView>
-            <TouchableOpacity
-              style={styles.containerButtonModal}
-              onPress={() => setModalVisibility(false)}
-            >
-              <Text style={styles.styleTextButton}>Cerrar</Text>
-            </TouchableOpacity>
+            {message == "No hay ingresos aun" ? (
+              <>
+                <View style={styles.modalTitle}>
+                  <Text style={styles.styleTextModal}>No hay Ingresos</Text>
+                </View>
+                <View style={styles.modalLine} />
+                <View
+                  style={[
+                    styles.containerIngresos,
+                    { justifyContent: "center" },
+                  ]}
+                >
+                  <Image
+                    source={require("../../../../assets/addIngresos.png")}
+                    style={{ width: 300, height: 300, alignSelf: "center" }}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.containerButtonModal}
+                  onPress={() => handlerButton()}
+                >
+                  <Text style={styles.styleTextButton}>¡Registra uno!</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <View style={styles.modalTitle}>
+                  <Text style={styles.styleTextModal}>Ingresos</Text>
+                </View>
+                <View style={styles.modalLine} />
+                <ScrollView style={styles.containerIngresos}>
+                  {inverseIngresos.map((item, i) => (
+                    <ItemIngreso
+                      key={i}
+                      id={item.ingId}
+                      tipo={item.ingType}
+                      description={item.ingDescription}
+                      amount={item.ingAmount}
+                    />
+                  ))}
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.containerButtonModal}
+                  onPress={() => setModalVisibility(false)}
+                >
+                  <Text style={styles.styleTextButton}>Cerrar</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </View>
       </Modal>
@@ -111,7 +176,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   styleTextModal: {
-    fontSize: 30,
+    fontSize: 34,
     fontWeight: "bold",
     color: "#2584A0",
   },
@@ -135,15 +200,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#2584A0",
     alignItems: "center",
     justifyContent: "center",
-    width: 100,
-    height: 40,
+    width: "auto",
+    height: 45,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 40,
+    paddingHorizontal: 20,
     alignSelf: "center",
   },
   styleTextButton: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

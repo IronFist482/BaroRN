@@ -9,9 +9,41 @@ import {
 import { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+
+{
+  /*
+  0.- Gorro Graduación
+  1.- Hamburguesa
+  2.- Metro
+  3.- Bolsa de compras
+  4.- Salud
+  5.- Barra de Chocolate
+  6.- Rollo de Película
+  7.- Café
+  8.- Teléfono
+  9.- Mochila
+  10.- ClipBoard
+*/
+}
+
+const Iconos: any = [
+  <FontAwesome5 name="graduation-cap" size={24} color="#2584A0" />,
+  <FontAwesome5 name="hamburger" size={24} color="#2584A0" />,
+  <FontAwesome5 name="subway" size={24} color="#2584A0" />,
+  <FontAwesome5 name="shopping-bag" size={24} color="#2584A0" />,
+  <FontAwesome5 name="heartbeat" size={24} color="#2584A0" />,
+  <FontAwesome5 name="candy-cane" size={24} color="#2584A0" />,
+  <FontAwesome5 name="film" size={24} color="#2584A0" />,
+  <FontAwesome5 name="coffee" size={24} color="#2584A0" />,
+  <FontAwesome5 name="phone" size={24} color="#2584A0" />,
+  <MaterialIcons name="backpack" size={24} color="#2584A0" />,
+  <FontAwesome5 name="clipboard" size={24} color="#2584A0" />,
+];
+
 const Item = (props: {
   id: number;
-  icon: JSX.Element;
+  icon: number;
   name: string;
   description: string;
   amount: number;
@@ -22,7 +54,8 @@ const Item = (props: {
     props.description,
     props.amount,
   ];
-  const [iconEdit, setIconEdit] = useState<JSX.Element>(icon);
+
+  const [iconEdit, setIconEdit] = useState<number>(icon);
   const [nameEdit, setNameEdit] = useState<string>(name);
   const [descriptionEdit, setDescriptionEdit] = useState<string>(description);
   const [amountEdit, setAmountEdit] = useState<number>(amount);
@@ -35,7 +68,7 @@ const Item = (props: {
         style={styles.item}
         onPress={() => setModalVisibility(true)}
       >
-        <View style={styles.containerIconItem}>{icon}</View>
+        <View style={styles.containerIconItem}>{Iconos[icon]}</View>
         <View style={styles.containerTextItem}>
           <Text style={styles.styleText}>{name}</Text>
         </View>

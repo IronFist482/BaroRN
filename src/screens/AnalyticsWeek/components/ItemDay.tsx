@@ -1,29 +1,31 @@
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
-const ItemDay = ({
-  id,
-  name,
-  date,
-  balance,
-  setVisibilityDay,
-}: {
-  id: number;
-  name: string;
-  date: string;
-  balance: number;
+interface Expday {
+  id: number | null;
+  day: string | null;
+  date: string | null | undefined;
+  amount: number | undefined;
   setVisibilityDay: Function;
-}) => {
+}
+
+const ItemDay = ({ id, day, date, amount, setVisibilityDay }: Expday) => {
   return (
     <TouchableOpacity style={styles.item} onPress={() => setVisibilityDay(id)}>
       <View style={styles.containerName}>
-        <Text style={styles.styleText}>{name}</Text>
+        <Text style={styles.styleText}>{day}</Text>
+      </View>
+      <View>
+        <Text style={styles.styleSeparator}>|</Text>
       </View>
       <View style={styles.containerDate}>
         <Text style={styles.styleText}>{date}</Text>
       </View>
+      <View>
+        <Text style={styles.styleSeparator}>|</Text>
+      </View>
       <View style={styles.containerBalance}>
-        <Text style={styles.styleText}>{`$ ${balance.toFixed(2)}`}</Text>
+        <Text style={styles.styleText}>{`$ ${Number(amount)}`}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -61,6 +63,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   styleText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#2584A0",
+  },
+  styleSeparator: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",

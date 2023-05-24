@@ -6,91 +6,48 @@ import { TouchableOpacity, ScrollView } from "react-native";
 import GastosRecientes from "./components/GastosRecientes";
 import AgregarIngreso from "./components/AgregarIngreso";
 import AgregarGasto from "./components/AgregarGasto";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalIngresos from "./components/ModalIngresos";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@store/index";
+import { useNavigation } from "@react-navigation/native";
+import { simpleFormat } from "@utils/formatNumber";
 
 const Home = () => {
   const [section, setSection] = useState<number>(0);
 
   const [balance, setBalance] = useState<number>(0);
 
-  const arrayGastos = [
-    {
-      id: 1,
-      icon: <Ionicons name="school" size={30} color="#2584A0" />, // 1
-      name: "Birete",
-      description: "Cosa para la foto de graduación",
-      amount: 100,
-    },
-    {
-      id: 2,
-      icon: <FontAwesome5 name="subway" size={30} color="#2584A0" />, // 3
-      name: "Metro",
-      description: "Lo tomé 2 veces",
-      amount: 10,
-    },
-    {
-      id: 3,
-      icon: <FontAwesome5 name="hamburger" size={30} color="#2584A0" />, // 2
-      name: "Anuario",
-      description: "Café con leche",
-      amount: 499.99,
-    },
-    {
-      id: 4,
-      // 4
-      icon: (
-        <MaterialCommunityIcons name="shopping" size={30} color="#2584A0" />
-      ),
-      name: "Café",
-      description: "Café con leche",
-      amount: 100,
-    },
-  ];
-  const arrayIngresos = [
-    {
-      id: 1,
-      tipo: "Salario",
-      description: "Es un ingreso fijo",
-      amount: 100,
-    },
-    {
-      id: 2,
-      tipo: "Honorario",
-      description: "Es un ingreso considerado no formal",
-      amount: 100,
-    },
-    {
-      id: 3,
-      tipo: "Pension",
-      description: "Es un ingreso que se le da a una persona mayor",
-      amount: 100,
-    },
-    {
-      id: 4,
-      tipo: "Mesada",
-      description:
-        "Es un ingreso que se le da a una persona de parte de un tercero",
-      amount: 100,
-    },
-    {
-      id: 5,
-      tipo: "Otros",
-      description: "Es un ingreso que no se encuentra en la lista",
-      amount: 100,
-    },
-  ];
+  const navigation = useNavigation();
+
+  let token = useSelector((state: RootState) => state.user).token;
+  const user = useSelector((state: RootState) => state.user.user);
+
+  useEffect(() => {
+    if (token == "") {
+      navigation.navigate("Signin");
+    }
+  }, [token]);
+  useEffect(() => {
+    setBalance(user.dataUser.datBalance);
+  }, [user]);
+
+  const setSectionUp = (e: number) => {
+    setSection(e);
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerBalance}>
         <View style={styles.containerTextBalance}>
-          <Text style={styles.styleTextBalance}>$ {balance}</Text>
+          <Text style={styles.styleTextBalance}>{`$ ${simpleFormat(
+            balance
+          )}`}</Text>
         </View>
         <View style={styles.lineBalance} />
-        <ModalIngresos data={arrayIngresos} />
+        <ModalIngresos setSectionUp={setSectionUp} reload={balance} />
       </View>
       <View style={styles.containerButtons}>
         <TouchableOpacity
@@ -113,8 +70,10 @@ const Home = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.containerLine} />
-      {section === 0 && <GastosRecientes data={arrayGastos} />}
-      {section === 1 && <AgregarGasto />}
+      {section === 0 && <GastosRecientes setSectionUp={setSectionUp} />}
+      {section === 1 && (
+        <AgregarGasto balance={balance} setSectionUp={setSectionUp} />
+      )}
       {section === 2 && <AgregarIngreso />}
       <StatusBar style="auto" />
     </ScrollView>

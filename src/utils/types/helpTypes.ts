@@ -15,7 +15,7 @@ export type ResponseStructure<T> =
     }
 
 export type Fn<TParams, TResponse> = (
-  params?: TParams
+  params: TParams
 ) => Promise<ResponseStructure<TResponse>>
 
 export type FnNoParam<TResponse> = () => Promise<ResponseStructure<TResponse>>

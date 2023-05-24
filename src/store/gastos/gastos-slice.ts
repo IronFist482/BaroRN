@@ -1,48 +1,45 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import {
-  GeneralTypeGastos,
-  GetSemanasResponse,
-} from "@utils/types/Gastos/gastos-diarios";
+import { Diario, GetSemanasResponse } from '@utils/types/Gastos/gastos-diarios'
 
 export interface GastosState {
-  gastosDiarios: GeneralTypeGastos[];
-  analytics: GetSemanasResponse;
+  gastosDiarios: Diario[]
+  analytics: GetSemanasResponse
 }
 
 const initialState: GastosState = {
   gastosDiarios: [],
   analytics: {
-    actualWeek: "",
+    actualWeek: '',
     finalDays: [],
-    message: "",
-    nextWeek: "",
-    prevWeek: "",
+    message: '',
+    nextWeek: '',
+    prevWeek: '',
     stadisticInfo: {
       avgWeek: 0,
       biggestExpense: 0,
       vsLastWeek: 0,
     },
   },
-};
+}
 
 export const gastosSlice = createSlice({
-  name: "gastos",
+  name: 'gastos',
   initialState,
   reducers: {
-    setGastosDiarios: (state, action: PayloadAction<GeneralTypeGastos[]>) => {
-      state.gastosDiarios = action.payload;
+    setGastosDiarios: (state, action: PayloadAction<Diario[]>) => {
+      state.gastosDiarios = action.payload
     },
     setAnalytics: (state, action: PayloadAction<GetSemanasResponse>) => {
-      state.analytics = action.payload;
+      state.analytics = action.payload
     },
 
     clearGastos: (state) => {
-      state.gastosDiarios = [];
+      state.gastosDiarios = []
     },
   },
-});
+})
 
 export const { setGastosDiarios, setAnalytics, clearGastos } =
-  gastosSlice.actions;
-export default gastosSlice.reducer;
+  gastosSlice.actions
+export default gastosSlice.reducer

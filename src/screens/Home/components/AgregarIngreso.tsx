@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Input, Icon, ListItem } from "@rneui/themed";
+import { CreateIngresoParams } from "@utils/types/Gastos/gastos-diarios";
+import { simpleFormat } from "@utils/formatNumber";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@store/index";
+import { updateBalance } from "@store/user/user-slice";
+import { createIngreso } from "@api/IngresosServices";
 
 const list2 = [
   {
@@ -25,6 +31,33 @@ const list2 = [
 ];
 
 const AgregarIngreso = () => {
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [params, setParams] = useState<CreateIngresoParams>({
+    ingreso: "",
+    tipo: "Salario",
+    desc: "",
+  });
+
+  const dispatch = useDispatch();
+
+  const handleAgregarIngreso = useCallback(async () => {
+    setDisabled(true);
+    const { data, message, ok } = await createIngreso(params);
+    if (!ok || !data || data == null) {
+      setDisabled(false);
+      return;
+    }
+    dispatch(updateBalance(data.newBalance));
+    setParams({
+      tipo: "Salario",
+      desc: "",
+      ingreso: "0",
+    });
+    setType("");
+    console.log(params);
+    setDisabled(false);
+  }, [params]);
+
   const [showAlert, setShowAlert] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const showAlertHandler = () => {
@@ -33,10 +66,24 @@ const AgregarIngreso = () => {
       setShowAlert(false);
     }, 1000);
   };
+
   const [type, setType] = useState("");
-  const election = (l: string) => {
-    console.log(type);
-  };
+
+  useEffect(() => {
+    if (type == "Salario") {
+      setParams({ ...params, tipo: type });
+    }
+    if (type == "Honorario") {
+      setParams({ ...params, tipo: type });
+    }
+    if (type == "Pensión") {
+      setParams({ ...params, tipo: type });
+    }
+    if (type == "Mesada") {
+      setParams({ ...params, tipo: type });
+    }
+  }, [type]);
+
   return (
     <>
       <View style={styles.containerSection}>
@@ -56,7 +103,7 @@ const AgregarIngreso = () => {
                   />
                   <ListItem.Content>
                     <ListItem.Title style={styles.styleTextInput}>
-                      {type === "" ? "Ingreso" : type}
+                      {type === "" ? "Salario" : type}
                     </ListItem.Title>
                   </ListItem.Content>
                 </>
@@ -94,6 +141,8 @@ const AgregarIngreso = () => {
                   color="#2584A0"
                 />
               }
+              onChangeText={(text) => setParams({ ...params, desc: text })}
+              value={params.desc}
             />
             <Input
               inputContainerStyle={styles.containerTextInput}
@@ -108,12 +157,16 @@ const AgregarIngreso = () => {
                 />
               }
               keyboardType="numeric"
+              onChangeText={(text) => setParams({ ...params, ingreso: text })}
+              value={params.ingreso}
             />
           </View>
 
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress={showAlertHandler}
+            onPress={handleAgregarIngreso}
+            onPressOut={showAlertHandler}
+            disabled={disabled}
           >
             <Text style={styles.textButtonStyle}>Agregar</Text>
           </TouchableOpacity>
