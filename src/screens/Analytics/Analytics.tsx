@@ -12,7 +12,6 @@ import { useState } from "react";
 const Analytics = () => {
   return (
     <ScrollView style={styles.container}>
-      <ContentInfo />
       <StatusBar style="auto" />
     </ScrollView>
   );
