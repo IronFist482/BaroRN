@@ -1,7 +1,11 @@
 //Este navegador es solo para que al iniciar la app cambie de la animación a la pantalla principal o login
 
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  NavigationProp,
+  RouteProp,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainNavigator from "./MainNavigator";
 import SplashScreen from "@screens/Splash/Splash";
@@ -12,9 +16,29 @@ import SelectImageScreen from "@screens/Forms/Signup/SelectImage";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 
-const Stack = createStackNavigator();
+type RootStackParamListPriv = {
+  SplashScreen: undefined;
+  MainNavigator: undefined;
+  Signin: undefined;
+  Signup: undefined;
+  SelectImage:
+    | {
+        params?: SignUpParams;
+      }
+    | undefined;
+  Profiles: undefined;
+};
+export type SecondaryRootStackParamList =
+  NavigationProp<RootStackParamListPriv>;
+
+export type SecondaryRootStackParamListProps<
+  TRoute extends keyof RootStackParamListPriv
+> = RouteProp<RootStackParamListPriv, TRoute>;
+
+const Stack = createStackNavigator<RootStackParamListPriv>();
 
 import { persistor, store } from "@store/index";
+import { SignInParams, SignUpParams } from "@utils/types/User";
 
 export default function SecundaryNavigator() {
   return (

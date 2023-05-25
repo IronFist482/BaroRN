@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { editPhoto, removeToken } from "@store/user/user-slice";
 import { clearGastos } from "@store/gastos/gastos-slice";
 import { RootState } from "@store/index";
+import InjectApiPFP from "@utils/InjectApiPFP";
 
 const Config = () => {
   const navigation = useNavigation();
@@ -24,7 +25,7 @@ const Config = () => {
 
   const { user } = useSelector((state: RootState) => state.user);
 
-  const [image, setImage] = useState(user.dataUser.datPhoto);
+  const [image, setImage] = useState(InjectApiPFP(user.dataUser.datPhoto));
 
   const handlePressImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -40,7 +41,7 @@ const Config = () => {
     });
     if (!result.canceled) {
       // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un Image component
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
   };
   const handleLogOut = useCallback(async () => {

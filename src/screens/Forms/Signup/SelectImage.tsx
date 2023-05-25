@@ -7,52 +7,52 @@ import {
   Alert,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { SignUpParams } from "@utils/types/User";
 import { SignUpService } from "@api/UserServices";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "@store/user/user-slice";
+import { MainRootStackParamList } from "@navigation/MainNavigator";
+import {
+  SecondaryRootStackParamList,
+  SecondaryRootStackParamListProps,
+} from "@navigation/SecundaryNavigator";
+import { uploadWithPicture } from "@utils/services/Pictures";
+import { useParams } from "react-router-dom";
 
-const SelectImage = (params: any) => {
-  console.log(params);
-  const { nombre, correo, contrasena, contrasenaConfirmada } = params;
-  const [signupParams, setSignupParams] = useState<SignUpParams>({
-    nombre: "",
-    correo: "",
-    contrasena: "",
-    contrasenaConfirmada: "",
-  });
+const SelectImage = () => {
+  const params = useRoute<SecondaryRootStackParamListProps<"SelectImage">>();
+  const [signupParams, setSignupParams] = useState<SignUpParams>(
+    params.params?.params ?? {
+      nombre: "",
+      correo: "",
+      contrasena: "",
+      contrasenaConfirmada: "",
+    }
+  );
 
-  setSignupParams({
-    nombre: nombre,
-    correo: correo,
-    contrasena: contrasena,
-    contrasenaConfirmada: contrasenaConfirmada,
-  });
-
-  const navigation = useNavigation();
+  const navigation = useNavigation<SecondaryRootStackParamList>();
   const dispatch = useDispatch();
+  const [image, setImage] = useState<Blob>();
 
+  const [imageUri, setImageUri] = useState<string>();
   const handlePressNavigation = useCallback(async () => {
-    const formData = new FormData();
-    // FormData.
-    formData.append("nombre", signupParams.nombre);
-    formData.append("correo", signupParams.correo);
-    formData.append("contrasena", signupParams.contrasena);
-    formData.append("contrasenaConfirmada", signupParams.contrasenaConfirmada);
-    formData.append("pfp", image);
-
-    const { data, message, ok } = await SignUpService(formData);
-    if (!ok || data == null) return Alert.alert(message);
-    Alert.alert(data.message);
-    dispatch(setUser(data.user));
-    dispatch(setToken(data.token));
-    navigation.navigate("Profiles");
-  }, [signupParams]);
-
-  const [image, setImage] = useState(null);
+    uploadWithPicture(
+      imageUri,
+      signupParams,
+      (data) => {
+        Alert.alert(data.message);
+        dispatch(setUser(data.user));
+        dispatch(setToken(data.token));
+        navigation.navigate("MainNavigator");
+      },
+      (err) => {
+        Alert.alert(err);
+      }
+    );
+  }, [signupParams, imageUri]);
 
   const handlePressImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -69,7 +69,7 @@ const SelectImage = (params: any) => {
 
     if (!result.canceled) {
       // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un Image component
-      setImage(result.uri);
+      setImageUri(result.assets[0].uri);
       setVisibilityBottom(false);
     }
   };
@@ -83,7 +83,7 @@ const SelectImage = (params: any) => {
       >
         {image !== null ? (
           <Image
-            source={{ uri: image }}
+            source={{ uri: imageUri }}
             style={{
               width: 180,
               height: 180,

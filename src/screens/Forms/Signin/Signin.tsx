@@ -15,16 +15,17 @@ import {
 } from "react-native";
 import { setToken, setUser } from "@store/user/user-slice";
 import { RootState } from "@store/index";
+import { SecondaryRootStackParamList } from "@navigation/SecundaryNavigator";
 
 const Signin = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SecondaryRootStackParamList>();
   const dispatch = useDispatch();
   const [params, setParams] = useState<SignInParams>({
     contraseña: "",
     correo: "",
   });
   const handlePressSignup = () => {
-    navigation.navigate("Signup", {});
+    navigation.navigate("Signup");
   };
   const [messageError, setMessageError] = useState<ErrorSignin>({
     messageError: "",

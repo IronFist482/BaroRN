@@ -1,6 +1,6 @@
 // AQUI VA EL MAIN NAVIGATOR, AQUI METERAN REACT NAVIGATION Y LLAMARAN LOS COMPONENTES DE @screens
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigationProp } from "@react-navigation/native";
 import {
   MaterialCommunityIcons,
   MaterialIcons,
@@ -15,11 +15,23 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "@screens/Home/Home";
 import ConfigScreen from "@screens/Config/Config";
 import FrequentsScreen from "@screens/Frequents/Frequents";
-import AnalyticsScreen from "@screens/Analytics/Analytics";
+import AnalyticsScreen from "@screens/Analytics/Weeks/Weeks";
 import SavingScreen from "@screens/Saving/Saving";
 const Stack = createStackNavigator();
 
-const Tab = createBottomTabNavigator();
+type RootStackParamListPriv = {
+  Home: undefined;
+  Analytics: undefined;
+  AnalyticsDay: {
+    day?: string;
+  };
+  Frequents: undefined;
+  Saving: undefined;
+  Configuration: undefined;
+};
+export type MainRootStackParamList = NavigationProp<RootStackParamListPriv>;
+
+const Tab = createBottomTabNavigator<RootStackParamListPriv>();
 
 export default function MainNavigator() {
   return (

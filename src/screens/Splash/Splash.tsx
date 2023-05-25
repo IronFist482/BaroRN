@@ -2,9 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { SecondaryRootStackParamList } from "@navigation/SecundaryNavigator";
 
 export default function Splash() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SecondaryRootStackParamList>();
   const [timer, setTimer] = useState(0);
   useFocusEffect(
     useCallback(() => {

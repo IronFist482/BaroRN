@@ -9,24 +9,25 @@ import {
   Alert,
 } from "react-native";
 import { Input, Icon } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpService } from "@api/UserServices";
 import { SignUpParams } from "@utils/types/User";
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "@store/session/session-slice";
+import { setToken, setUser } from "@store/user/user-slice";
 import { SignInService } from "@api/UserServices";
 import { SignInParams } from "@utils/types/User";
-import { ErrorMessage } from "@utils/types/Errors";
+import { ErrorSignin } from "@utils/types/Error/ErrorSignin";
+import { SecondaryRootStackParamList } from "@navigation/SecundaryNavigator";
 
-const Signup = ({ params }: { params: SignUpParams }) => {
-  const navigation = useNavigation();
+const Signup = () => {
+  const navigation = useNavigation<SecondaryRootStackParamList>();
   const dispatch = useDispatch();
 
   const handlePressSignin = () => {
     navigation.navigate("Signin");
   };
 
-  const [messageError, setMessageError] = useState<ErrorMessage>({
+  const [messageError, setMessageError] = useState<ErrorSignin>({
     messageError: "",
     messageErrorEmail: "",
     messageErrorPassword: "",
@@ -60,10 +61,7 @@ const Signup = ({ params }: { params: SignUpParams }) => {
     }
     Alert.alert(signupParams.nombre);
     navigation.navigate("SelectImage", {
-      nombre: signupParams.nombre,
-      correo: signupParams.correo,
-      contrasena: signupParams.contrasena,
-      contrasenaConfirmada: signupParams.contrasenaConfirmada,
+      params: signupParams,
     });
   };
 
