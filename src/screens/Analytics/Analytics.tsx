@@ -6,12 +6,12 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import ContentInfo from "@screens/Analytics/components/ContentInfo";
 import { useState } from "react";
 
-const Analytics = () => {
+const AnalyticsContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <ScrollView style={styles.container}>
+      {children}
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Analytics;
+export default AnalyticsContainer;

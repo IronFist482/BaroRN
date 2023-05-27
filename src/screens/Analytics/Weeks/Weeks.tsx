@@ -7,6 +7,7 @@ import { simpleFormat } from "@utils/formatNumber";
 import { useSelector } from "react-redux";
 import { RootState } from "@store/index";
 import { useEffect } from "react";
+import AnalyticsContainer from "../Analytics";
 import {
   VictoryBar,
   VictoryChart,
@@ -18,108 +19,111 @@ const Weeks = () => {
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState("");
   return (
-    <>
-      {loading == true ? (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            paddingVertical: "50%",
-          }}
-        >
-          <View>
-            <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
-              Cargando
-            </Text>
-          </View>
+    <AnalyticsContainer>
+      <>
+        {loading == true ? (
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
+              height: "100%",
+              paddingVertical: "50%",
             }}
           >
-            <CircleCharge />
+            <View>
+              <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
+                Cargando
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CircleCharge />
+            </View>
           </View>
-        </View>
-      ) : (
-        <>
-          {isError !== "" ? (
-            <>
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  paddingVertical: "20%",
-                }}
-              >
-                <View style={{ paddingHorizontal: "10%" }}>
-                  {isError === "Error al obtener semanas" ? (
-                    <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
-                      {isError}
-                    </Text>
-                  ) : (
-                    <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
-                      Preparando los datos para la siguiente semana
-                    </Text>
-                  )}
-                </View>
+        ) : (
+          <>
+            {isError !== "" ? (
+              <>
                 <View
                   style={{
                     alignItems: "center",
                     justifyContent: "center",
-                    marginTop: "20%",
+                    height: "100%",
+                    paddingVertical: "20%",
                   }}
                 >
-                  {isError === "Error al obtener semanas" ? (
-                    <Image
-                      source={require("../../../../assets/errorSemanas.png")}
-                      style={{ width: 300, height: 300 }}
-                    />
-                  ) : (
-                    <Image
-                      source={require("../../../../assets/noSemanas.png")}
-                      style={{ width: 300, height: 300 }}
-                    />
-                  )}
-                </View>
-              </View>
-            </>
-          ) : (
-            <>
-              <View
-                style={[
-                  styles.containerTitle,
-                  { marginBottom: 0, flexDirection: "column" },
-                ]}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <TouchableOpacity
-                    style={styles.viewArrows}
-                    //onPress={() => handleArrowsWeeks("left")}
-                  >
-                    <FontAwesome name="arrow-left" size={30} color="white" />
-                  </TouchableOpacity>
-                  <View>
-                    <View>
-                      <Text style={styles.styleTitleWeek}>{"Semana"}</Text>
-                    </View>
-                    <View>
-                      <Text style={styles.styleDateWeeks}>{"actual week"}</Text>
-                    </View>
+                  <View style={{ paddingHorizontal: "10%" }}>
+                    {isError === "Error al obtener semanas" ? (
+                      <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
+                        {isError}
+                      </Text>
+                    ) : (
+                      <Text style={[styles.styleTitleWeek, { fontSize: 28 }]}>
+                        Preparando los datos para la siguiente semana
+                      </Text>
+                    )}
                   </View>
-                  <TouchableOpacity
-                    style={styles.viewArrows}
-                    //onPress={() => handleArrowsWeeks("right")}
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "20%",
+                    }}
                   >
-                    <FontAwesome name="arrow-right" size={30} color="white" />
-                  </TouchableOpacity>
+                    {isError === "Error al obtener semanas" ? (
+                      <Image
+                        source={require("../../../../assets/errorSemanas.png")}
+                        style={{ width: 300, height: 300 }}
+                      />
+                    ) : (
+                      <Image
+                        source={require("../../../../assets/noSemanas.png")}
+                        style={{ width: 300, height: 300 }}
+                      />
+                    )}
+                  </View>
                 </View>
-              </View>
-              <View style={styles.lineBalance} />
-              <View style={styles.containerDays}>
-                {/*{DaysArray.map((day, i) => (
+              </>
+            ) : (
+              <>
+                <View
+                  style={[
+                    styles.containerTitle,
+                    { marginBottom: 0, flexDirection: "column" },
+                  ]}
+                >
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                      style={styles.viewArrows}
+                      //onPress={() => handleArrowsWeeks("left")}
+                    >
+                      <FontAwesome name="arrow-left" size={30} color="white" />
+                    </TouchableOpacity>
+                    <View>
+                      <View>
+                        <Text style={styles.styleTitleWeek}>{"Semana"}</Text>
+                      </View>
+                      <View>
+                        <Text style={styles.styleDateWeeks}>
+                          {"actual week"}
+                        </Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.viewArrows}
+                      //onPress={() => handleArrowsWeeks("right")}
+                    >
+                      <FontAwesome name="arrow-right" size={30} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.lineBalance} />
+                <View style={styles.containerDays}>
+                  {/*{DaysArray.map((day, i) => (
                   <ItemDay
                     key={i}
                     id={i}
@@ -143,84 +147,91 @@ const Weeks = () => {
                   setVisibilityDay={handleVisibilityDay}
                   />
                 ))}*/}
-              </View>
-              <View style={styles.containerAllEstadisticas}>
-                <View style={styles.containerEstadisticas}>
-                  <View style={styles.containerTitleEstadisticas}>
-                    <Text style={styles.styleTitleEstadisticas}>
-                      Estadísticas de la semana
-                    </Text>
-                  </View>
-                  <View style={styles.containerPromedioGastoSemanal}>
-                    <View style={styles.containerIconPromedioGastoSemanal}>
-                      <Fontisto name="bar-chart" size={34} color="#044C7C" />
-                    </View>
-                    <View style={styles.containerAllTextPromedioGastoSemanal}>
-                      <View style={styles.containerTitlePromedioGastoSemanal}>
-                        <Text style={styles.styleTitlePromedioGastoSemanal}>
-                          Promedio de gasto semanal
-                        </Text>
-                      </View>
-                      <View style={styles.containerAmountPromedioGastoSemanal}>
-                        <Text
-                          style={styles.styleAmountPromedioGastoSemanal}
-                        ></Text>
-                      </View>
-                    </View>
-                  </View>
-
-                  {/*Comparacion Gasto Semanal*/}
-
-                  <View style={styles.containerComparacionGastoSemanal}>
-                    <View style={styles.containerTitleComparacionGastoSemanal}>
-                      <Text style={styles.styleTitleComparacionGastoSemanal}>
-                        Comparacion con la semana anterior
+                </View>
+                <View style={styles.containerAllEstadisticas}>
+                  <View style={styles.containerEstadisticas}>
+                    <View style={styles.containerTitleEstadisticas}>
+                      <Text style={styles.styleTitleEstadisticas}>
+                        Estadísticas de la semana
                       </Text>
                     </View>
-                    <View>
-                      <View
-                        style={styles.containerAllTextComparacionGastoSemanal}
-                      >
+                    <View style={styles.containerPromedioGastoSemanal}>
+                      <View style={styles.containerIconPromedioGastoSemanal}>
+                        <Fontisto name="bar-chart" size={34} color="#044C7C" />
+                      </View>
+                      <View style={styles.containerAllTextPromedioGastoSemanal}>
+                        <View style={styles.containerTitlePromedioGastoSemanal}>
+                          <Text style={styles.styleTitlePromedioGastoSemanal}>
+                            Promedio de gasto semanal
+                          </Text>
+                        </View>
                         <View
-                          style={styles.containerAmountComparacionGastoSemanal}
+                          style={styles.containerAmountPromedioGastoSemanal}
                         >
                           <Text
-                            style={styles.styleAmountComparacionGastoSemanal}
+                            style={styles.styleAmountPromedioGastoSemanal}
                           ></Text>
                         </View>
                       </View>
                     </View>
-                  </View>
-                  <View style={styles.containerChart}>
-                    <VictoryChart
-                      theme={VictoryTheme.material}
-                      domainPadding={20}
-                      width={350}
-                      height={350}
-                    >
-                      <VictoryBar
-                        style={{ data: { fill: "#044C7C" } }}
-                        data={[
-                          { x: "Lunes", y: 1320 },
-                          { x: "Martes", y: 230 },
-                          { x: "Miercoles", y: 310 },
-                          { x: "Jueves", y: 438 },
-                          { x: "Viernes", y: 260 },
-                          { x: "Sabado", y: 0 },
-                          { x: "Domingo", y: 0 },
-                        ]}
-                        labels={({ datum }) => `$${datum.y}`}
-                        labelComponent={<VictoryLabel dy={-10} />}
-                      />
-                    </VictoryChart>
+
+                    {/*Comparacion Gasto Semanal*/}
+
+                    <View style={styles.containerComparacionGastoSemanal}>
+                      <View
+                        style={styles.containerTitleComparacionGastoSemanal}
+                      >
+                        <Text style={styles.styleTitleComparacionGastoSemanal}>
+                          Comparacion con la semana anterior
+                        </Text>
+                      </View>
+                      <View>
+                        <View
+                          style={styles.containerAllTextComparacionGastoSemanal}
+                        >
+                          <View
+                            style={
+                              styles.containerAmountComparacionGastoSemanal
+                            }
+                          >
+                            <Text
+                              style={styles.styleAmountComparacionGastoSemanal}
+                            ></Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.containerChart}>
+                      <VictoryChart
+                        theme={VictoryTheme.material}
+                        domainPadding={20}
+                        width={350}
+                        height={350}
+                      >
+                        <VictoryBar
+                          style={{ data: { fill: "#044C7C" } }}
+                          data={[
+                            { x: "Lunes", y: 1320 },
+                            { x: "Martes", y: 230 },
+                            { x: "Miercoles", y: 310 },
+                            { x: "Jueves", y: 438 },
+                            { x: "Viernes", y: 260 },
+                            { x: "Sabado", y: 0 },
+                            { x: "Domingo", y: 0 },
+                          ]}
+                          labels={({ datum }) => `$${datum.y}`}
+                          labelComponent={<VictoryLabel dy={-10} />}
+                        />
+                      </VictoryChart>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </>
-          )}
-        </>
-      )}
-    </>
+              </>
+            )}
+          </>
+        )}
+      </>
+    </AnalyticsContainer>
   );
 };
 

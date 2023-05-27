@@ -26,7 +26,7 @@ const Home = () => {
   const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
-    if (token == "") {
+    if (token == null) {
       navigation.navigate("Signin");
     }
   }, [token]);

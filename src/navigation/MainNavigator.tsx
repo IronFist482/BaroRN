@@ -15,7 +15,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "@screens/Home/Home";
 import ConfigScreen from "@screens/Config/Config";
 import FrequentsScreen from "@screens/Frequents/Frequents";
-import AnalyticsScreen from "@screens/Analytics/Weeks/Weeks";
+import WeekScreen from "@screens/Analytics/Weeks/Weeks";
 import SavingScreen from "@screens/Saving/Saving";
 const Stack = createStackNavigator();
 
@@ -74,7 +74,7 @@ export default function MainNavigator() {
       />
       <Tab.Screen
         name="Analytics"
-        component={AnalyticsScreen}
+        component={WeekScreen}
         options={{
           title: "Análisis",
           tabBarLabel: () => <></>,
