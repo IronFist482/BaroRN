@@ -7,13 +7,11 @@
     "icon": "./assets/iconBaroRN.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "assets/splash.mp4",
+      "image": "assets/SplashEmpresa.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

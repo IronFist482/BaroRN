@@ -94,7 +94,6 @@ const Signin = () => {
           inputContainerStyle={styles.containerTextInput}
           inputStyle={styles.styleTextInput}
           placeholder="Correo Electrónico"
-          inputMode="email"
           leftIcon={
             <Icon type="feather" name="at-sign" size={20} color="black" />
           }

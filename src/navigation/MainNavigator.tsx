@@ -21,7 +21,9 @@ const Stack = createStackNavigator();
 
 type RootStackParamListPriv = {
   Home: undefined;
-  Analytics: undefined;
+  Analytics: {
+    week?: string;
+  };
   AnalyticsDay: {
     day?: string;
   };

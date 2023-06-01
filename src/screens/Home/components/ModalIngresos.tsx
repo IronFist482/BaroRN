@@ -25,19 +25,19 @@ const ModalIngresos = ({
   const dispatch = useDispatch();
   const ingresos = useSelector((state: RootState) => state.ingresos.ingresos);
   const inverseIngresos = ingresos.slice().reverse();
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
   async function fetchGastos() {
     setLoading(true);
-    const { data, ok, message } = await getIngresos({});
-    if (!ok || !data) {
-      setMessage(message);
+    const { data, ok, message } = await getIngresos();
+    if (!ok || !data || data.ingresos.length == 0) {
+      setMessage(true);
       console.log(ingresos);
       return console.log(message);
     }
     console.log(message);
-    setMessage(message);
+    setMessage(false);
     dispatch(setIngresos(data.ingresos));
   }
   useEffect(() => {
@@ -68,7 +68,7 @@ const ModalIngresos = ({
       >
         <View style={styles.containerModal}>
           <View style={styles.contentModal}>
-            {message == "No hay ingresos aun" ? (
+            {message == true ? (
               <>
                 <View style={styles.modalTitle}>
                   <Text style={styles.styleTextModal}>No hay Ingresos</Text>

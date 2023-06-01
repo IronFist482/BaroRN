@@ -26,7 +26,7 @@ const Saving = () => {
       </View>
       <TouchableOpacity style={styles.containerSubscripción}>
         <Text style={styles.styleSubscription}>
-          Necesitas tener la subscripción "IA"
+          Necesitas tener la suscripción "IA"
         </Text>
       </TouchableOpacity>
     </View>

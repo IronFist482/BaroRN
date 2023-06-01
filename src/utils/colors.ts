@@ -10,6 +10,16 @@ export const colors = {
   blue_variation_6: "#0e5d87",
   blue_variation_7: "#084d7c",
   white_1: "#ffffff",
+  gray_1_1: "#7A7A7A",
+  gray_1_2: "#969696",
+  gray_1_3: "#9C9C9C",
+  gray_1_4: "#BABABA",
+  gray_1_5: "#C8C8C8",
+  gray_2_1: "#A7A7A7",
+  gray_2_2: "#BDBDBD",
+  gray_2_3: "#C9C9C9",
+  gray_2_4: "#D3D3D3",
+  gray_2_5: "#DCDCDC",
 };
 
 export default colors;

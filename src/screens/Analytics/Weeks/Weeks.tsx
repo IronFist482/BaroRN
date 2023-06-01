@@ -1,23 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import CircleCharge from "@screens/Components/CircleCharge";
 import { FontAwesome, Fontisto } from "@expo/vector-icons";
 import ItemDay from "../components/ItemDay";
 import { simpleFormat } from "@utils/formatNumber";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@store/index";
-import { useEffect } from "react";
-import AnalyticsContainer from "../Analytics";
 import {
   VictoryBar,
   VictoryChart,
   VictoryTheme,
   VictoryLabel,
 } from "victory-native";
+import { getSemanas } from "@api/GastosServices";
+import { setAnalytics } from "@store/gastos/gastos-slice";
+import { useParams } from "react-router-dom";
+import { useNavigation } from "@react-navigation/native";
+import AnalyticsContainer from "../Analytics";
+import { DaysArray } from "@utils/types/Days";
 
 const Weeks = () => {
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState("");
+  const dispatch = useDispatch();
+  const params = useParams() as { week?: string };
+  const navigation = useNavigation();
+
+  const week = useSelector((s: RootState) => s.gastos.analytics);
+  const analyticState = useSelector((s: RootState) => s.gastos.analytics);
+  const finalDays = analyticState?.finalDays;
+
+  const weeksInfo = {
+    prevWeek: analyticState?.prevWeek,
+    nextWeek: analyticState?.nextWeek,
+  };
+
+  const fetchWeeks = useCallback(async () => {
+    setLoading(true);
+    const { data, ok, message } = await getSemanas(params.week);
+    if (!data) {
+      setLoading(false);
+      return setIsError("Error al obtener semanas");
+    }
+    console.log("data.weeks ->", data);
+    dispatch(setAnalytics(data));
+    setLoading(false);
+  }, [week]);
+
+  useEffect(() => {
+    fetchWeeks();
+  }, [params.week]);
+
+  const handleArrows = (direction: "left" | "right") => {
+    if (direction === "left") {
+      if (!weeksInfo.prevWeek) return;
+      navigation.navigate("Analytics", { week: weeksInfo.prevWeek });
+    } else {
+      if (!weeksInfo.nextWeek) return;
+      navigation.navigate("Analytics", { week: weeksInfo.nextWeek });
+    }
+  };
+
   return (
     <AnalyticsContainer>
       <>
@@ -99,7 +142,7 @@ const Weeks = () => {
                   <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
                       style={styles.viewArrows}
-                      //onPress={() => handleArrowsWeeks("left")}
+                      onPress={() => handleArrows("left")}
                     >
                       <FontAwesome name="arrow-left" size={30} color="white" />
                     </TouchableOpacity>
@@ -109,13 +152,13 @@ const Weeks = () => {
                       </View>
                       <View>
                         <Text style={styles.styleDateWeeks}>
-                          {"actual week"}
+                          {week?.actualWeek}
                         </Text>
                       </View>
                     </View>
                     <TouchableOpacity
                       style={styles.viewArrows}
-                      //onPress={() => handleArrowsWeeks("right")}
+                      onPress={() => handleArrows("right")}
                     >
                       <FontAwesome name="arrow-right" size={30} color="white" />
                     </TouchableOpacity>
@@ -123,30 +166,15 @@ const Weeks = () => {
                 </View>
                 <View style={styles.lineBalance} />
                 <View style={styles.containerDays}>
-                  {/*{DaysArray.map((day, i) => (
-                  <ItemDay
-                    key={i}
-                    id={i}
-                    day={day}
-                    date={
-                      finalDays &&
-                      finalDays[i] &&
-                      finalDays[i] !== null &&
-                      finalDays[i]?.dayDate
-                        ? finalDays[i]?.dayDate
-                        : null
-                    }
-                    amount={
-                      finalDays &&
-                      finalDays[i] &&
-                      finalDays[i] !== null &&
-                      finalDays[i]?.dayTotal
-                        ? finalDays[i]?.dayTotal
-                        : 0
-                    }
-                  setVisibilityDay={handleVisibilityDay}
-                  />
-                ))}*/}
+                  {DaysArray.map((day, i) => (
+                    <ItemDay
+                      key={i}
+                      id={finalDays[i].dayId}
+                      day={day}
+                      date={finalDays[i].dayDate}
+                      amount={finalDays[i].dayTotal}
+                    />
+                  ))}
                 </View>
                 <View style={styles.containerAllEstadisticas}>
                   <View style={styles.containerEstadisticas}>

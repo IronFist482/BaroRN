@@ -22,12 +22,12 @@ const Home = () => {
 
   const navigation = useNavigation();
 
-  let token = useSelector((state: RootState) => state.user).token;
+  let token = useSelector((state: RootState) => state.user.token);
   const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
-    if (token == null) {
-      navigation.navigate("Signin");
+    if (token == "") {
+      navigation.navigate("Signin", { screen: "Signin" });
     }
   }, [token]);
   useEffect(() => {

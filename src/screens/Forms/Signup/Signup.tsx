@@ -12,12 +12,14 @@ import { Input, Icon } from "@rneui/themed";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpService } from "@api/UserServices";
 import { SignUpParams } from "@utils/types/User";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "@store/user/user-slice";
 import { SignInService } from "@api/UserServices";
 import { SignInParams } from "@utils/types/User";
 import { ErrorSignin } from "@utils/types/Error/ErrorSignin";
 import { SecondaryRootStackParamList } from "@navigation/SecundaryNavigator";
+import { RootState } from "@store/index";
+import { Navigate } from "react-router-dom";
 
 const Signup = () => {
   const navigation = useNavigation<SecondaryRootStackParamList>();
@@ -42,6 +44,31 @@ const Signup = () => {
   const [image, setImage] = useState();
   const [preview, setPreview] = useState<string>();
 
+  const handleSubmit = useCallback(async () => {
+    const formData = new FormData();
+    // FormData.
+    formData.append("nombre", signupParams.nombre);
+    formData.append("correo", signupParams.correo);
+    formData.append("contrasena", signupParams.contrasena);
+    formData.append("contrasenaConfirmada", signupParams.contrasenaConfirmada);
+    formData.append("pfp", image);
+
+    const { data, message, ok } = await SignUpService(formData);
+    if (!ok || data == null) return Alert.alert(message);
+    Alert.alert(data.message);
+    dispatch(setUser(data.user));
+    dispatch(setToken(data.token));
+    navigation.navigate("MainNavigator");
+  }, [signupParams, image, preview]);
+
+  let user = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (user.token !== "") {
+      navigation.navigate("MainNavigator");
+    }
+  }, []);
+
   const handlePressImage = async () => {
     if (signupParams.nombre.length < 3) {
       Alert.alert("El nombre debe tener al menos 3 caracteres");
@@ -59,10 +86,7 @@ const Signup = () => {
       Alert.alert("Las contraseñas no coinciden");
       return;
     }
-    Alert.alert(signupParams.nombre);
-    navigation.navigate("SelectImage", {
-      params: signupParams,
-    });
+    handleSubmit();
   };
 
   return (
@@ -98,6 +122,7 @@ const Signup = () => {
               correo: e,
             })
           }
+          autoCapitalize="none"
           value={signupParams.correo}
           inputMode="email"
           leftIcon={

@@ -13,7 +13,7 @@ export default function Splash() {
       setTimeout(() => {
         // Navega a la pantalla principal
         navigation.navigate("Signin");
-      }, 2000);
+      }, 1500);
 
       // Devuelve una función para cancelar el temporizador si la pantalla pierde el enfoque
       return () => clearTimeout(timer);

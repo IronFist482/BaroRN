@@ -8,6 +8,8 @@ import {
   Alert,
   Image,
 } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,15 +19,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { editPhoto, removeToken } from "@store/user/user-slice";
 import { clearGastos } from "@store/gastos/gastos-slice";
 import { RootState } from "@store/index";
+import ConfigProfile from "./components/ConfigProfile";
+import ConfigAccount from "./components/ConfigAccount";
+import ConfigSubscription from "./components/ConfigSubscription";
 import InjectApiPFP from "@utils/InjectApiPFP";
+import colors from "@utils/colors";
 
 const Config = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [section, setSection] = useState<number>(0);
+  const [visibilitySection, setVisibilitySection] = useState<string>("");
 
   const { user } = useSelector((state: RootState) => state.user);
 
   const [image, setImage] = useState(InjectApiPFP(user.dataUser.datPhoto));
+
+  const handleChangeSection = (e: string) => {
+    setVisibilitySection(e);
+  };
 
   const handlePressImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,54 +65,98 @@ const Config = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerOptions}>
-        <TouchableOpacity
-          style={styles.containerSelectorImage}
-          onPress={handlePressImagePicker}
-        >
-          {image !== "" ? (
-            <Image
-              source={{ uri: image }}
-              style={{
-                width: 190,
-                height: 190,
-                borderRadius: 90,
-                borderColor: "white",
-                borderWidth: 4,
-              }}
-            />
-          ) : (
-            <View style={styles.containerIcon}>
-              <Ionicons name="add" size={60} color="#fff" />
+    <ScrollView style={styles.container}>
+      {visibilitySection === "" ? (
+        <>
+          <View style={styles.containerOptions}>
+            <TouchableOpacity
+              style={styles.containerSelectorImage}
+              onPress={handlePressImagePicker}
+            >
+              {image !== "" ? (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: 190,
+                    height: 190,
+                    borderRadius: 90,
+                    borderColor: "white",
+                    borderWidth: 4,
+                  }}
+                />
+              ) : (
+                <View style={styles.containerIcon}>
+                  <Ionicons name="add" size={60} color="#fff" />
+                </View>
+              )}
+            </TouchableOpacity>
+            <View style={styles.containerTextName}>
+              <Text
+                style={styles.styleTextName}
+              >{`${user.dataUser.datName}`}</Text>
             </View>
-          )}
-        </TouchableOpacity>
-        <View style={styles.containerTextName}>
-          <Text style={styles.styleTextName}>
-            Bienvenido{" "}
-            {user.dataUser.datName.charAt(0).toUpperCase() +
-              user.dataUser.datName.slice(1)}
-          </Text>
-        </View>
-        <View style={styles.containerButtons}>
-          <TouchableOpacity style={styles.containerButtonProfile}>
-            <Text style={styles.styleButtonProfile}>Perfil</Text>
+            <View style={styles.containerButtons}>
+              <TouchableOpacity
+                style={styles.containerButton}
+                onPress={() => handleChangeSection("Profile")}
+              >
+                <FontAwesome5
+                  name="user-alt"
+                  size={24}
+                  color={colors.white_1}
+                  style={styles.styleIcon}
+                />
+                <View style={styles.containerAlsoText}>
+                  <Text style={styles.styleButton}>Perfil</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.containerButton}
+                onPress={() => handleChangeSection("Account")}
+              >
+                <FontAwesome5
+                  name="bars"
+                  size={24}
+                  color={colors.white_1}
+                  style={styles.styleIcon}
+                />
+                <View style={styles.containerAlsoText}>
+                  <Text style={styles.styleButton}>Cuenta</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.containerButton}
+                onPress={() => handleChangeSection("Subscription")}
+              >
+                <AntDesign
+                  name="star"
+                  size={24}
+                  color={colors.white_1}
+                  style={styles.styleIcon}
+                />
+                <View style={styles.containerAlsoText}>
+                  <Text style={styles.styleButton}>Suscripcion</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={handleLogOut}
+            style={styles.containerButtonExit}
+          >
+            <Text style={styles.styleButtonExit}>Cerrar Sesión</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.containerButtonAccount}>
-            <Text style={styles.styleButtonAccount}>Cuenta</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <TouchableOpacity
-        onPress={handleLogOut}
-        style={styles.containerButtonExit}
-      >
-        <Text style={styles.styleButtonExit}>Cerrar Sesión</Text>
-      </TouchableOpacity>
+        </>
+      ) : visibilitySection === "Profile" ? (
+        <ConfigProfile section={handleChangeSection} />
+      ) : visibilitySection === "Account" ? (
+        <ConfigAccount section={handleChangeSection} />
+      ) : visibilitySection === "Subscription" ? (
+        <ConfigSubscription section={handleChangeSection} />
+      ) : null}
 
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -110,13 +166,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#2584A0",
   },
   containerOptions: {
-    marginTop: 30,
+    marginTop: 50,
     height: "auto",
-    width: "90%",
+    width: "85%",
     alignSelf: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderRadius: 30,
+    borderRadius: 40,
+    elevation: 10,
   },
   containerSelectorImage: {
     width: 220,
@@ -126,6 +183,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#2584A0",
+    elevation: 15,
   },
   containerIcon: {
     height: 190,
@@ -141,69 +199,63 @@ const styles = StyleSheet.create({
   containerTextName: {
     marginTop: 20,
     height: 60,
-    width: 200,
+    width: "80%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
   },
   styleTextName: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
     color: "#2584A0",
   },
 
   containerButtons: {
+    marginVertical: 20,
     height: 180,
     width: "100%",
     alignSelf: "center",
     alignItems: "center",
-    borderRadius: 30,
   },
-  containerButtonProfile: {
-    height: 50,
-    width: 230,
+  containerButton: {
+    height: "auto",
+    width: "70%",
     backgroundColor: "#2584A0",
-    borderRadius: 10,
-    marginTop: 30,
+    borderRadius: 50,
     marginBottom: 10,
     alignItems: "center",
-    justifyContent: "center",
     alignSelf: "center",
+    elevation: 5,
+    flexDirection: "row",
+    paddingVertical: 10,
   },
-  styleButtonProfile: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff",
+  styleIcon: {
+    marginLeft: "12%",
+    marginRight: "5%",
   },
-  containerButtonAccount: {
-    height: 50,
-    width: 230,
-    backgroundColor: "#2584A0",
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
+  containerAlsoText: {
+    width: "56%",
   },
-  styleButtonAccount: {
-    fontSize: 20,
-    fontWeight: "bold",
+
+  styleButton: {
+    fontSize: 22,
+    fontWeight: "600",
     textAlign: "center",
     color: "#fff",
   },
 
   containerButtonExit: {
     height: 50,
-    width: 220,
+    width: "60%",
     backgroundColor: "#fff",
-    borderRadius: 10,
+    borderRadius: 50,
     marginTop: 30,
+    marginBottom: 30,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
+    elevation: 5,
   },
   styleButtonExit: {
     fontSize: 20,

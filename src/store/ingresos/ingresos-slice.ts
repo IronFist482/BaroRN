@@ -1,25 +1,29 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { Ingreso } from '@utils/types/Gastos/gastos-diarios'
+import { Ingreso } from "@utils/types/Gastos/gastos-diarios";
 
 export interface IngresosState {
-  ingresos: Ingreso[]
+  ingresos: Ingreso[];
 }
 
 const initialState: IngresosState = {
   ingresos: [],
-}
+};
 
 export const ingresosSlice = createSlice({
-  name: 'ingresos',
+  name: "ingresos",
   initialState,
   reducers: {
     setIngresos: (state, action: PayloadAction<Ingreso[]>) => {
-      state.ingresos = action.payload
+      state.ingresos = action.payload;
+    },
+
+    clearIngresos: (state) => {
+      state.ingresos = [];
     },
   },
-})
+});
 
-export const { setIngresos } = ingresosSlice.actions
+export const { setIngresos, clearIngresos } = ingresosSlice.actions;
 
-export default ingresosSlice.reducer
+export default ingresosSlice.reducer;

@@ -1,3 +1,4 @@
+import colors from "@utils/colors";
 import React, { useRef, useState } from "react";
 import {
   StyleSheet,
@@ -9,14 +10,14 @@ import {
 } from "react-native";
 
 const Switch = ({ value, onValueChange }: any) => {
-  const [animation] = useState(new Animated.Value(value ? 1 : 0));
+  const [animation] = useState(new Animated.Value(value ? 2.4 : 0));
   const [isEnabled, setIsEnabled] = useState(value);
 
   const handleSwitch = () => {
     setIsEnabled(!isEnabled);
     Animated.timing(animation, {
       toValue: isEnabled ? 0 : 2.4,
-      duration: 500,
+      duration: 400,
       useNativeDriver: false,
     }).start(() => onValueChange(!isEnabled));
   };
@@ -55,11 +56,12 @@ const styles = StyleSheet.create({
     width: 100,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "white",
+    backgroundColor: colors.white_1,
     justifyContent: "center",
     paddingHorizontal: 5,
     alignSelf: "center",
     marginTop: 20,
+    elevation: 5,
   },
   toggle: {
     width: 30,

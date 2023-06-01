@@ -1,66 +1,82 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { colors } from "@utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { simpleFormat } from "@utils/formatNumber";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
+import ModalEdit from "./ModalEdit";
+import ModalConsult from "./ModalConsult";
+import ModalDesc from "./ModalDesc";
+import { useDispatch } from "react-redux";
+import { deleteFreq } from "@store/frecuentes/frecuentes-slice";
+import { deleteFrecuente } from "@api/FrecuentesServices";
 
-const ItemFrequents = ({
+const ItemModificado = ({
+  id,
   title,
-  numRest,
   amount,
-  date,
   lapse,
-  color,
+  description,
+  initialDate,
+  estatico,
 }: {
+  id: number;
   title: string;
-  numRest: number;
   amount: number;
-  date: string;
   lapse: string;
-  color: string;
+  description: string;
+  initialDate: string;
+  estatico: boolean;
 }) => {
-  const colorElection = (value: string) => {
-    if (value == "Light") {
-      return colors.blue_3;
-    } else if (value == "Hard") {
-      return colors.blue_1;
-    } else {
-      return colors.blue_2;
-    }
-  };
-  const [colorItem, setColorItem] = useState(colorElection(color));
-
-  useEffect(() => {
-    console.log("useEffect");
-    colorElection(color);
+  const [showView, setShowView] = useState(false);
+  const dispatch = useDispatch();
+  const [deleteBoolean, setDeleteBoolean] = useState(false);
+  const onDelete = useCallback(async () => {
+    Alert.alert("Eliminar", "¿Estás seguro de eliminar este registro?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: async () => functionDelete(),
+      },
+    ]);
   }, []);
 
+  const functionDelete = async () => {
+    const { data } = await deleteFrecuente(id);
+    if (!data || !data.ok) return console.log("Error al eliminar");
+    dispatch(deleteFreq(id));
+  };
+
+  const onEdit = (s: boolean) => {
+    setShowView(showView);
+  };
   return (
     <View style={styles.container}>
-      <View
-        style={[styles.containetBarVertical, { backgroundColor: colorItem }]}
-      />
       <View style={styles.containerAllInfo}>
         <View style={styles.containerHeaderItem}>
           <View style={styles.containerNameItem}>
             <Text style={styles.styleNameItem}>{title}</Text>
           </View>
-          <View style={styles.containerDiasRestantes}>
-            <Text style={styles.styleDiasRestantes}>
-              {numRest} {numRest == 1 ? "día" : "días"} restantes
-            </Text>
-          </View>
+          <ModalDesc freDescription={description} />
         </View>
         <View style={styles.containerDataGastos}>
           <View style={styles.containerAllAmount}>
             <View style={styles.containerTitleAmount}>
               <Text style={styles.styleTitleAmount}>Monto:</Text>
             </View>
-            <View style={styles.containerDataAmount}>
-              <Text style={styles.styleDataAmount}>{`$${simpleFormat(
-                amount
-              )}`}</Text>
-            </View>
+            {estatico ? (
+              <View style={styles.containerDataAmount}>
+                <Text style={styles.styleDataAmount}>{`$${simpleFormat(
+                  amount
+                )}`}</Text>
+              </View>
+            ) : (
+              <View style={styles.containerDataAmount}>
+                <Text style={styles.styleDataAmount}>{`$${simpleFormat(
+                  amount
+                )}`}</Text>
+              </View>
+            )}
           </View>
           <View style={styles.containerBarSeparator} />
           <View style={styles.containerDataDate}>
@@ -71,9 +87,9 @@ const ItemFrequents = ({
                   { color: colors.blue_1, fontWeight: "bold" },
                 ]}
               >
-                Fecha:
+                Registro:
               </Text>
-              <Text style={styles.styleDate}> {date}</Text>
+              <Text style={styles.styleDate}>{initialDate}</Text>
             </View>
             <View style={styles.containerDate}>
               <Text
@@ -89,9 +105,18 @@ const ItemFrequents = ({
           </View>
           <View style={styles.containerBarSeparator} />
           <View style={styles.containerIcons}>
-            <TouchableOpacity style={styles.containerAlarm}>
+            <ModalEdit
+              title={title}
+              amount={amount}
+              lapse={lapse}
+              description={description}
+              initialDate={initialDate}
+              estatico={estatico}
+            />
+            <ModalConsult />
+            <TouchableOpacity style={styles.containerAlarm} onPress={onDelete}>
               <MaterialCommunityIcons
-                name="alarm"
+                name="delete"
                 size={24}
                 color={colors.blue_1}
               />
@@ -107,37 +132,30 @@ const styles = StyleSheet.create({
   container: {
     height: "auto",
     width: "90%",
-    backgroundColor: colors.white_1,
+    backgroundColor: colors.blue_1,
     marginTop: 30,
     alignSelf: "center",
     borderRadius: 10,
     flexDirection: "row",
-    paddingVertical: 10,
     elevation: 5,
-  },
-  containetBarVertical: {
-    alignSelf: "center",
-    marginHorizontal: "3%",
-    height: "92%",
-    borderRadius: 10,
-    width: "2%",
-    backgroundColor: colors.blue_1,
-    elevation: 3,
+    paddingVertical: 10,
+    justifyContent: "center",
   },
   containerAllInfo: {
     height: "auto",
-    width: "90%",
+    width: "100%",
     flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
   },
   containerHeaderItem: {
     height: "auto",
     paddingVertical: 10,
-    width: "100%",
+    width: "90%",
     flexDirection: "row",
+    alignItems: "center",
   },
   containerNameItem: {
-    marginLeft: "3%",
     height: "auto",
     width: "46%",
     flexDirection: "row",
@@ -145,25 +163,9 @@ const styles = StyleSheet.create({
   styleNameItem: {
     fontSize: 22,
     fontWeight: "bold",
-    color: colors.blue_1,
+    color: colors.white_1,
   },
-  containerDiasRestantes: {
-    height: "auto",
-    width: "45%",
-    flexDirection: "column",
-    justifyContent: "center",
-    paddingHorizontal: 5,
-    backgroundColor: colors.white_1,
-    borderWidth: 2,
-    borderColor: colors.blue_1,
-    borderRadius: 10,
-    elevation: 3,
-  },
-  styleDiasRestantes: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.blue_1,
-  },
+
   containerDataGastos: {
     height: "auto",
     width: "90%",
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 10,
-    marginHorizontal: "3%",
+
     borderRadius: 10,
     backgroundColor: colors.white_1,
     elevation: 5,
@@ -221,20 +223,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     marginHorizontal: "2%",
-    paddingVertical: 10,
   },
   containerDate: {
     height: "auto",
-    width: "90%",
+    width: "100%",
     flexDirection: "column",
     alignItems: "center",
-    marginVertical: 5,
     marginHorizontal: "2%",
+    marginTop: 10,
   },
   styleDate: {
     fontSize: 15,
     fontWeight: "500",
-    textAlign: "left",
+    textAlign: "center",
   },
   containerIcons: {
     height: "auto",
@@ -258,4 +259,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ItemFrequents;
+export default ItemModificado;

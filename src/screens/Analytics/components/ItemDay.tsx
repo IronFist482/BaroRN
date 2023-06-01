@@ -6,12 +6,11 @@ interface Expday {
   day: string | null;
   date: string | null | undefined;
   amount: number | undefined;
-  setVisibilityDay: Function;
 }
 
-const ItemDay = ({ id, day, date, amount, setVisibilityDay }: Expday) => {
+const ItemDay = ({ id, day, date, amount }: Expday) => {
   return (
-    <TouchableOpacity style={styles.item} onPress={() => setVisibilityDay(id)}>
+    <TouchableOpacity style={styles.item}>
       <View style={styles.containerName}>
         <Text style={styles.styleText}>{day}</Text>
       </View>
