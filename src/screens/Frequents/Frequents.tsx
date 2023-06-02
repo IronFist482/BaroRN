@@ -82,8 +82,8 @@ const Frequents = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    if (!value) fetchProximos();
-    else fetchFrecuentes();
+    fetchProximos();
+    fetchFrecuentes();
     setRefreshing(false);
   }, [refreshing]);
 

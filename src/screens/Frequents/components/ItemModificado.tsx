@@ -9,6 +9,19 @@ import ModalDesc from "./ModalDesc";
 import { useDispatch } from "react-redux";
 import { deleteFreq } from "@store/frecuentes/frecuentes-slice";
 import { deleteFrecuente } from "@api/FrecuentesServices";
+import { TextInput } from "react-native-gesture-handler";
+import type { PostGastoFrecuenteParams } from "@utils/types/Frecuentes";
+import { updateFrecuente } from "@api/FrecuentesServices";
+import { useApi } from "@hooks/useApi";
+
+interface ModalAddProps {
+  amount: string;
+  name: string;
+  periodo: "Semanal" | "Quincenal" | "Mensual" | "Bimestral" | "Trimestral";
+  description: string;
+  date: string;
+  editable: boolean;
+}
 
 const ItemModificado = ({
   id,
@@ -22,7 +35,7 @@ const ItemModificado = ({
   id: number;
   title: string;
   amount: number;
-  lapse: string;
+  lapse: "Semanal" | "Quincenal" | "Mensual" | "Bimestral" | "Trimestral";
   description: string;
   initialDate: string;
   estatico: boolean;
@@ -30,6 +43,8 @@ const ItemModificado = ({
   const [showView, setShowView] = useState(false);
   const dispatch = useDispatch();
   const [deleteBoolean, setDeleteBoolean] = useState(false);
+  const [UpdateFrecuenteResponse, loadingUpdateFreq, errEditFreq] =
+    useApi(updateFrecuente);
   const onDelete = useCallback(async () => {
     Alert.alert("Eliminar", "¿Estás seguro de eliminar este registro?", [
       { text: "Cancelar", style: "cancel" },
@@ -47,8 +62,41 @@ const ItemModificado = ({
     dispatch(deleteFreq(id));
   };
 
-  const onEdit = (s: boolean) => {
-    setShowView(showView);
+  const [params, setParams] = useState<ModalAddProps>({
+    amount: amount.toString(),
+    name: title,
+    periodo: lapse,
+    description: description,
+    date: initialDate,
+    editable: estatico,
+  });
+
+  const handleUpdate = async () => {
+    if (
+      params.amount === "" ||
+      params.amount === "0" ||
+      params.amount === "0.00"
+    )
+      return Alert.alert("No puedes poner valores nulos");
+
+    if (params.amount === amount.toString())
+      return Alert.alert("No hay cambios");
+
+    const dataLapse: PostGastoFrecuenteParams = {
+      amount: parseInt(params.amount),
+      name: params.name,
+      description: params.description,
+      lapse: params.periodo,
+      date: params.date,
+      isStatic: params.editable,
+    };
+
+    const data = await updateFrecuente({
+      freqId: id,
+      params: dataLapse,
+    });
+    if (!data) return Alert.alert("Error: " + errEditFreq);
+    Alert.alert("Gasto editado correctamente");
   };
   return (
     <View style={styles.container}>
@@ -71,11 +119,33 @@ const ItemModificado = ({
                 )}`}</Text>
               </View>
             ) : (
-              <View style={styles.containerDataAmount}>
-                <Text style={styles.styleDataAmount}>{`$${simpleFormat(
-                  amount
-                )}`}</Text>
-              </View>
+              <>
+                <View
+                  style={[
+                    styles.containerDataAmount,
+                    { backgroundColor: colors.gray_2_5, borderRadius: 10 },
+                  ]}
+                >
+                  <TextInput
+                    style={styles.styleDataAmount}
+                    keyboardType="numeric"
+                    onChangeText={(text) =>
+                      setParams({ ...params, amount: text })
+                    }
+                    value={params.amount}
+                  ></TextInput>
+                </View>
+                <TouchableOpacity
+                  style={styles.containerAlarm}
+                  onPress={handleUpdate}
+                >
+                  <MaterialCommunityIcons
+                    name="check"
+                    size={24}
+                    color={colors.blue_1}
+                  />
+                </TouchableOpacity>
+              </>
             )}
           </View>
           <View style={styles.containerBarSeparator} />
@@ -106,6 +176,7 @@ const ItemModificado = ({
           <View style={styles.containerBarSeparator} />
           <View style={styles.containerIcons}>
             <ModalEdit
+              id={id}
               title={title}
               amount={amount}
               lapse={lapse}

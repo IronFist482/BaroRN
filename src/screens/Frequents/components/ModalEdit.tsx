@@ -16,9 +16,11 @@ import { Picker } from "@react-native-picker/picker";
 import { useApi } from "@hooks/useApi";
 import { useDispatch } from "react-redux";
 import { updateFrecuente } from "@api/FrecuentesServices";
-import { PostGastoFrecuenteParams } from "@utils/types/Frecuentes";
 import { LAPSES_TYPE } from "@utils/types/Frecuentes";
 import { LAPSES_TO_INT } from "@utils/types/Frecuentes";
+import { UpdateFrecuenteResponse } from "../../../utils/types/Frecuentes/index";
+import type { PostGastoFrecuenteParams } from "@utils/types/Frecuentes";
+import { useNavigation } from "@react-navigation/native";
 
 interface ModalAddProps {
   amount: string;
@@ -41,28 +43,31 @@ const ModalEdit = ({
   id: number;
   title: string;
   amount: number;
-  lapse: string;
+  lapse: "Semanal" | "Quincenal" | "Mensual" | "Bimestral" | "Trimestral";
   description: string;
   initialDate: string;
   estatico: boolean;
 }) => {
+  const dispatch = useDispatch();
   const [modalVisibility, setModalVisibility] = useState(false);
   const [checked, setChecked] = useState(false);
   const dateHoy = new Date();
   const [selectedStartDate, setSelectedStartDate] = useState(dateHoy);
   const startDate = selectedStartDate ? selectedStartDate.toString() : "";
 
+  const [UpdateFrecuenteResponse, loadingUpdateFreq, errEditFreq] =
+    useApi(updateFrecuente);
   const [select, setSelect] = useState<
     "Semanal" | "Quincenal" | "Mensual" | "Bimestral" | "Trimestral"
   >("Semanal");
-
-  const [name, setName] = useState(title);
-  const [monto, setAmount] = useState(amount.toString());
-  const [date, setDate] = useState(initialDate);
-  const [descripcion, setDescripcion] = useState(description);
-  const [periodo, setPeriodo] = useState<LAPSES_TYPE>();
-  const [editable, setEditable] = useState(estatico);
-
+  const [params, setParams] = useState<ModalAddProps>({
+    amount: amount.toString(),
+    name: title,
+    periodo: lapse,
+    description: description,
+    date: initialDate,
+    editable: checked,
+  });
   const onDateChange = (date: any) => {
     console.log(date);
     const dateSplit = date.toString().split(" ");
@@ -87,26 +92,41 @@ const ModalEdit = ({
     }-${dateSplit[2]}`;
     setParams({ ...params, date: dateChanged });
   };
-  const dispatch = useDispatch();
 
-  const handleEdit = async () => {
+  const handleUpdate = async () => {
     console.log(params);
     if (
-      monto === "" ||
-      monto === "0" ||
-      name === "" ||
-      date === "" ||
-      descripcion === ""
+      params.amount === "" ||
+      params.amount === "0" ||
+      params.name === "" ||
+      params.date === "" ||
+      params.description === ""
     )
       return Alert.alert("Llena todos los campos");
 
+    const dataLapse: PostGastoFrecuenteParams = {
+      amount: parseInt(params.amount),
+      name: params.name,
+      description: params.description,
+      lapse: params.periodo,
+      date: params.date,
+      isStatic: params.editable,
+    };
+
     const data = await updateFrecuente({
       freqId: id,
-      props: params,
+      params: dataLapse,
     });
-    if (!data) return Alert.alert("Error: " + errCreateFreq);
-    Alert.alert("Gasto creado");
-    dispatch(addGastoFrecuente(data.gasto));
+    if (!data) return Alert.alert("Error: " + errEditFreq);
+    Alert.alert("Gasto editado correctamente");
+    setParams({
+      amount: "0",
+      name: "",
+      periodo: "Semanal",
+      date: "",
+      editable: false,
+      description: "",
+    });
     setChecked(false);
     setSelect("Semanal");
     setModalVisibility(false);
@@ -115,7 +135,6 @@ const ModalEdit = ({
   const handleSwitch = () => {
     setChecked(!checked);
     setParams({ ...params, editable: !checked });
-    console.log(params.editable);
   };
 
   const handlePicker = (
@@ -302,7 +321,7 @@ const ModalEdit = ({
                 </Picker>
               </View>
               <View style={styles.containerSwitch}>
-                <Text style={styles.styleTextSwitch}>Editable</Text>
+                <Text style={styles.styleTextSwitch}>Estatico</Text>
                 <Switch
                   value={checked}
                   onValueChange={handleSwitch}
@@ -314,7 +333,7 @@ const ModalEdit = ({
                   styles.containerButtonModal,
                   { backgroundColor: colors.blue_2 },
                 ]}
-                onPress={handleCreate}
+                onPress={handleUpdate}
               >
                 <Text style={styles.styleTextButton}>Agregar Gasto</Text>
               </TouchableOpacity>
@@ -448,6 +467,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#2584A0",
     marginHorizontal: 10,
+  },
+  stylePicker: {
+    fontSize: 18,
+    color: "#2584A0",
+  },
+  styleItemPicker: {
+    fontSize: 18,
+    color: "#2584A0",
   },
 });
 
