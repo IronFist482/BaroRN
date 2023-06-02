@@ -7,6 +7,7 @@ import {
   Animated,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Switch from "./components/Switch";
@@ -77,8 +78,22 @@ const Frequents = () => {
     setLoading(false);
   }, [proximos]);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    if (!value) fetchProximos();
+    else fetchFrecuentes();
+    setRefreshing(false);
+  }, [refreshing]);
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {loading == true ? (
         <View
           style={{

@@ -29,6 +29,7 @@ const ConfigProfile = ({ section }: { section: Function }) => {
     name: user.dataUser.datName,
     newPassword: "",
     actualPassword: "",
+    email: user.usuEmail,
   });
 
   const handleEditProfile = useCallback(async () => {

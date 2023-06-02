@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import CircleCharge from "@screens/Components/CircleCharge";
 import {
@@ -7,239 +7,262 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { VictoryPie, VictoryTheme } from "victory-native";
+import AnalyticsContainer from "../Analytics";
+import { useNavigation, useParams } from "react-router-dom";
+import { Days as Day } from "@utils/types/Days";
+import { useApi } from "@hooks/useApi";
+import { getDay } from "@api/GastosServices";
 
-const Days = () => {
+const Days = ({ dataNavigation }: any) => {
+  const params = useParams() as { day: Day };
+  const navigation = useNavigation();
+  const [request, loadin, err, data] = useApi(getDay);
+
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState("");
+
+  const fetchDays = useCallback(async () => {
+    await request(dataNavigation.day);
+  }, [params]);
+
+  useEffect(() => {
+    fetchDays();
+  }, []);
+
   return (
-    <>
-      {loading ? (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            paddingVertical: "50%",
-          }}
-        >
-          <View>
-            <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
-              Cargando
-            </Text>
-          </View>
+    <AnalyticsContainer>
+      <>
+        {loading ? (
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
+              height: "100%",
+              paddingVertical: "50%",
             }}
           >
-            <CircleCharge />
+            <View>
+              <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
+                Cargando
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CircleCharge />
+            </View>
           </View>
-        </View>
-      ) : (
-        <>
-          {isError !== "" ? (
-            <>
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  paddingVertical: "20%",
-                }}
-              >
-                <View style={{ paddingHorizontal: "10%" }}>
-                  {isError === "Error al obtener día" ? (
-                    <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
-                      {isError}
-                    </Text>
-                  ) : (
-                    <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
-                      No se pudo obtener el día
-                    </Text>
-                  )}
-                </View>
+        ) : (
+          <>
+            {isError !== "" ? (
+              <>
                 <View
                   style={{
                     alignItems: "center",
                     justifyContent: "center",
-                    marginTop: "20%",
+                    height: "100%",
+                    paddingVertical: "20%",
                   }}
                 >
-                  {isError === "Error al obtener días" ? (
-                    <Image
-                      source={require("../../../../assets/errorSemanas.png")}
-                      style={{ width: 300, height: 300 }}
-                    />
-                  ) : (
-                    <Image
-                      source={require("../../../../assets/noSemanas.png")}
-                      style={{ width: 300, height: 300 }}
-                    />
-                  )}
-                </View>
-              </View>
-            </>
-          ) : (
-            <>
-              <View
-                style={[
-                  styles.containerTitle,
-                  { marginBottom: 0, flexDirection: "column" },
-                ]}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <TouchableOpacity
-                    style={[styles.viewArrows, { marginRight: "10%" }]}
-                  >
-                    <FontAwesome name="arrow-left" size={30} color="white" />
-                  </TouchableOpacity>
-                  <View>
-                    <View>
-                      <Text style={styles.styleTitleDay}></Text>
-                    </View>
-                    <View>
-                      <Text
-                        style={styles.styleDateDays}
-                      >{`Fecha del día`}</Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    style={[styles.viewArrows, { marginLeft: "10%" }]}
-                  >
-                    <FontAwesome name="arrow-right" size={30} color="white" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.lineBalance} />
-
-              <View>
-                <TouchableOpacity
-                  style={styles.containerIconBack}
-                  //onPress={() => setVisibilityDay(0)}
-                >
-                  {
-                    <MaterialCommunityIcons
-                      name="calendar-week"
-                      size={56}
-                      color="#2584A0"
-                    />
-                  }
-                </TouchableOpacity>
-                <View style={styles.containerAllData}>
-                  <View style={styles.containerGastosTotales}>
-                    <View
-                      style={[
-                        styles.containerGastoTotal,
-                        { marginRight: "4%" },
-                      ]}
-                    >
-                      <View style={styles.containerTitleGastoTotal}>
-                        <Text style={styles.styleTitleGastoTotal}>
-                          Total de Ayer
-                        </Text>
-                      </View>
-                      <View style={styles.containerAmountGastoTotal}>
-                        <Text style={styles.styleAmountGastoTotal}></Text>
-                      </View>
-                    </View>
-                    <View
-                      style={[styles.containerGastoTotal, { marginLeft: "4%" }]}
-                    >
-                      <View style={styles.containerTitleGastoTotal}>
-                        <Text style={styles.styleTitleGastoTotal}>
-                          Total de Hoy
-                        </Text>
-                      </View>
-                      <View style={styles.containerAmountGastoTotal}>
-                        <Text style={styles.styleAmountGastoTotal}></Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.containerGastoComparativo}>
-                    <View style={styles.containerTitleGastoComparativo}>
-                      <Text style={styles.styleTitleGastoComparativo}>
-                        Comparación con el día anterior
+                  <View style={{ paddingHorizontal: "10%" }}>
+                    {isError === "Error al obtener día" ? (
+                      <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
+                        {isError}
                       </Text>
+                    ) : (
+                      <Text style={[styles.styleTitleDay, { fontSize: 28 }]}>
+                        No se pudo obtener el día
+                      </Text>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "20%",
+                    }}
+                  >
+                    {isError === "Error al obtener días" ? (
+                      <Image
+                        source={require("../../../../assets/errorSemanas.png")}
+                        style={{ width: 300, height: 300 }}
+                      />
+                    ) : (
+                      <Image
+                        source={require("../../../../assets/noSemanas.png")}
+                        style={{ width: 300, height: 300 }}
+                      />
+                    )}
+                  </View>
+                </View>
+              </>
+            ) : (
+              <>
+                <View
+                  style={[
+                    styles.containerTitle,
+                    { marginBottom: 0, flexDirection: "column" },
+                  ]}
+                >
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                      style={[styles.viewArrows, { marginRight: "10%" }]}
+                    >
+                      <FontAwesome name="arrow-left" size={30} color="white" />
+                    </TouchableOpacity>
+                    <View>
+                      <View>
+                        <Text style={styles.styleTitleDay}></Text>
+                      </View>
+                      <View>
+                        <Text
+                          style={styles.styleDateDays}
+                        >{`Fecha del día`}</Text>
+                      </View>
                     </View>
-                    <View style={styles.containerInfoGastoComparativo}>
-                      <View style={styles.containerInfoDayGastoComparativo}>
-                        <View style={styles.containerTitleInfoDay}>
-                          <Text style={styles.styleTitleInfoDay}></Text>
+                    <TouchableOpacity
+                      style={[styles.viewArrows, { marginLeft: "10%" }]}
+                    >
+                      <FontAwesome name="arrow-right" size={30} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.lineBalance} />
+
+                <View>
+                  <TouchableOpacity
+                    style={styles.containerIconBack}
+                    //onPress={() => setVisibilityDay(0)}
+                  >
+                    {
+                      <MaterialCommunityIcons
+                        name="calendar-week"
+                        size={56}
+                        color="#2584A0"
+                      />
+                    }
+                  </TouchableOpacity>
+                  <View style={styles.containerAllData}>
+                    <View style={styles.containerGastosTotales}>
+                      <View
+                        style={[
+                          styles.containerGastoTotal,
+                          { marginRight: "4%" },
+                        ]}
+                      >
+                        <View style={styles.containerTitleGastoTotal}>
+                          <Text style={styles.styleTitleGastoTotal}>
+                            Total de Ayer
+                          </Text>
                         </View>
-                        <View style={styles.containerAmountInfoDay}>
-                          <Text style={styles.styleAmountInfoDay}>{}</Text>
+                        <View style={styles.containerAmountGastoTotal}>
+                          <Text style={styles.styleAmountGastoTotal}></Text>
                         </View>
                       </View>
-                      <View style={styles.containerOperator}>
-                        <Text
-                          style={[
-                            styles.styleOperator,
-                            {
-                              /*dataDay.diffDays == 0
+                      <View
+                        style={[
+                          styles.containerGastoTotal,
+                          { marginLeft: "4%" },
+                        ]}
+                      >
+                        <View style={styles.containerTitleGastoTotal}>
+                          <Text style={styles.styleTitleGastoTotal}>
+                            Total de Hoy
+                          </Text>
+                        </View>
+                        <View style={styles.containerAmountGastoTotal}>
+                          <Text style={styles.styleAmountGastoTotal}></Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.containerGastoComparativo}>
+                      <View style={styles.containerTitleGastoComparativo}>
+                        <Text style={styles.styleTitleGastoComparativo}>
+                          Comparación con el día anterior
+                        </Text>
+                      </View>
+                      <View style={styles.containerInfoGastoComparativo}>
+                        <View style={styles.containerInfoDayGastoComparativo}>
+                          <View style={styles.containerTitleInfoDay}>
+                            <Text style={styles.styleTitleInfoDay}></Text>
+                          </View>
+                          <View style={styles.containerAmountInfoDay}>
+                            <Text style={styles.styleAmountInfoDay}>{}</Text>
+                          </View>
+                        </View>
+                        <View style={styles.containerOperator}>
+                          <Text
+                            style={[
+                              styles.styleOperator,
+                              {
+                                /*dataDay.diffDays == 0
                               ? { color: "gray" }
                               : dataDay.diffDays < 0
                               ? { color: "green" }
                           : { color: "red" },*/
-                            },
-                          ]}
-                        >
-                          {/*{dayBalance == dayBeforeBalance
+                              },
+                            ]}
+                          >
+                            {/*{dayBalance == dayBeforeBalance
                             ? "="
                             : dayBeforeBalance < dayBalance
                             ? "<"
                           : ">"}*/}
+                          </Text>
+                        </View>
+                        <View style={styles.containerInfoDayGastoComparativo}>
+                          <View style={styles.containerTitleInfoDay}>
+                            <Text style={styles.styleTitleInfoDay}>{}</Text>
+                          </View>
+                          <View style={styles.containerAmountInfoDay}>
+                            <Text style={styles.styleAmountInfoDay}>{}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.containerBarPay}>
+                      <View style={styles.containerTitleGraph}>
+                        <Text style={styles.styleTitleGraph}>
+                          Gastos según el monto
                         </Text>
                       </View>
-                      <View style={styles.containerInfoDayGastoComparativo}>
-                        <View style={styles.containerTitleInfoDay}>
-                          <Text style={styles.styleTitleInfoDay}>{}</Text>
-                        </View>
-                        <View style={styles.containerAmountInfoDay}>
-                          <Text style={styles.styleAmountInfoDay}>{}</Text>
-                        </View>
-                      </View>
+                      <VictoryPie
+                        theme={VictoryTheme.material}
+                        width={300}
+                        height={300}
+                        padding={20}
+                        animate={{
+                          duration: 2000,
+                        }}
+                        colorScale={["#044C7C", "#2584a0", "#4CADCA"]}
+                        data={[
+                          { x: "Birete", y: 35 },
+                          { x: "Metro", y: 40 },
+                          { x: "Anuario", y: 55 },
+                        ]}
+                        style={{
+                          labels: {
+                            fontSize: 18,
+                            fill: "#ffffff",
+                            fontWeight: "bold",
+                            padding: -100,
+                          },
+                        }}
+                        labelPosition="centroid"
+                        labelPlacement="parallel"
+                      />
                     </View>
-                  </View>
-                  <View style={styles.containerBarPay}>
-                    <View style={styles.containerTitleGraph}>
-                      <Text style={styles.styleTitleGraph}>
-                        Gastos según el monto
-                      </Text>
-                    </View>
-                    <VictoryPie
-                      theme={VictoryTheme.material}
-                      width={300}
-                      height={300}
-                      padding={20}
-                      animate={{
-                        duration: 2000,
-                      }}
-                      colorScale={["#044C7C", "#2584a0", "#4CADCA"]}
-                      data={[
-                        { x: "Birete", y: 35 },
-                        { x: "Metro", y: 40 },
-                        { x: "Anuario", y: 55 },
-                      ]}
-                      style={{
-                        labels: {
-                          fontSize: 18,
-                          fill: "#ffffff",
-                          fontWeight: "bold",
-                          padding: -100,
-                        },
-                      }}
-                      labelPosition="centroid"
-                      labelPlacement="parallel"
-                    />
                   </View>
                 </View>
-              </View>
-            </>
-          )}
-        </>
-      )}
-    </>
+              </>
+            )}
+          </>
+        )}
+      </>
+    </AnalyticsContainer>
   );
 };
 const styles = StyleSheet.create({

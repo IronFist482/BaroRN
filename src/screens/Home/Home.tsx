@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, RefreshControl } from "react-native";
 import { Fontisto } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity, ScrollView } from "react-native";
@@ -32,14 +32,28 @@ const Home = () => {
   }, [token]);
   useEffect(() => {
     setBalance(user.dataUser.datBalance);
+    console.log(user.dataUser);
   }, [user]);
 
   const setSectionUp = (e: number) => {
     setSection(e);
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setBalance(user.dataUser.datBalance);
+    setRefreshing(false);
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.containerBalance}>
         <View style={styles.containerTextBalance}>
           <Text style={styles.styleTextBalance}>{`$ ${simpleFormat(

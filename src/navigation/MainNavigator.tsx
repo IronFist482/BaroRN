@@ -17,6 +17,7 @@ import ConfigScreen from "@screens/Config/Config";
 import FrequentsScreen from "@screens/Frequents/Frequents";
 import WeekScreen from "@screens/Analytics/Weeks/Weeks";
 import SavingScreen from "@screens/Saving/Saving";
+import DayScreen from "@screens/Analytics/Days/Days";
 const Stack = createStackNavigator();
 
 type RootStackParamListPriv = {
@@ -89,6 +90,7 @@ export default function MainNavigator() {
           ),
         }}
       />
+
       <Tab.Screen
         name="Frequents"
         component={FrequentsScreen}
@@ -109,11 +111,11 @@ export default function MainNavigator() {
         name="Saving"
         component={SavingScreen}
         options={{
-          title: "Plan de ahorro",
+          title: "Mi Plan",
           tabBarLabel: () => <></>,
           tabBarIcon: ({ focused }) => (
-            <Entypo
-              name="wallet"
+            <MaterialCommunityIcons
+              name="robot"
               size={24}
               color="black"
               style={{ color: focused ? "#044C7C" : "#0008" }}

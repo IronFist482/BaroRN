@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 interface Expday {
-  id: number | null;
+  id: number | undefined;
   day: string | null;
   date: string | null | undefined;
   amount: number | undefined;
+  navigation: any;
 }
 
 const ItemDay = ({ id, day, date, amount }: Expday) => {

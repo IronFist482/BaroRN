@@ -1,19 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, ScrollView, RefreshControl, View } from "react-native";
 import { useState } from "react";
 
 const AnalyticsContainer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {children}
       <StatusBar style="auto" />
-    </ScrollView>
+    </View>
   );
 };
 

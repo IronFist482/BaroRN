@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 import CircleCharge from "@screens/Components/CircleCharge";
 import { FontAwesome, Fontisto } from "@expo/vector-icons";
 import ItemDay from "../components/ItemDay";
@@ -11,6 +18,8 @@ import {
   VictoryChart,
   VictoryTheme,
   VictoryLabel,
+  VictoryPie,
+  VictoryLegend,
 } from "victory-native";
 import { getSemanas } from "@api/GastosServices";
 import { setAnalytics } from "@store/gastos/gastos-slice";
@@ -18,6 +27,8 @@ import { useParams } from "react-router-dom";
 import { useNavigation } from "@react-navigation/native";
 import AnalyticsContainer from "../Analytics";
 import { DaysArray } from "@utils/types/Days";
+import { colors } from "@utils/colors";
+import { ScrollView } from "react-native";
 
 const Weeks = () => {
   const [loading, setLoading] = useState(true);
@@ -25,6 +36,8 @@ const Weeks = () => {
   const dispatch = useDispatch();
   const params = useParams() as { week?: string };
   const navigation = useNavigation();
+  const [estadisticas, setEstadisticas] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const week = useSelector((s: RootState) => s.gastos.analytics);
   const analyticState = useSelector((s: RootState) => s.gastos.analytics);
@@ -61,9 +74,31 @@ const Weeks = () => {
     }
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    });
+    fetchWeeks();
+  }, []);
+
+  const dataGraphics = [
+    { x: "Lun", y: finalDays[0].dayTotal },
+    { x: "Mar", y: finalDays[1].dayTotal },
+    { x: "Mie", y: finalDays[2].dayTotal },
+    { x: "Jue", y: finalDays[3].dayTotal },
+    { x: "Vie", y: finalDays[4].dayTotal },
+    { x: "Sab", y: finalDays[5].dayTotal },
+    { x: "Dom", y: finalDays[6].dayTotal },
+  ];
+
   return (
     <AnalyticsContainer>
-      <>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {loading == true ? (
           <View
             style={{
@@ -176,47 +211,220 @@ const Weeks = () => {
                     />
                   ))}
                 </View>
-                <View style={styles.containerAllEstadisticas}>
-                  <View style={styles.containerEstadisticas}>
-                    <View style={styles.containerTitleEstadisticas}>
-                      <Text style={styles.styleTitleEstadisticas}>
-                        Estadísticas de la semana
-                      </Text>
-                    </View>
-                    <View style={styles.containerPromedioGastoSemanal}>
-                      <View style={styles.containerIconPromedioGastoSemanal}>
-                        <Fontisto name="bar-chart" size={34} color="#044C7C" />
-                      </View>
-                      <View style={styles.containerAllTextPromedioGastoSemanal}>
-                        <View style={styles.containerTitlePromedioGastoSemanal}>
-                          <Text style={styles.styleTitlePromedioGastoSemanal}>
-                            Promedio de gasto semanal
+                {estadisticas ? (
+                  <>
+                    <View style={styles.containerEstadisticas}>
+                      <View style={{ flexDirection: "row" }}>
+                        <TouchableOpacity
+                          style={[styles.viewArrows, { marginTop: 0 }]}
+                          onPress={() => setEstadisticas(!estadisticas)}
+                        >
+                          <FontAwesome
+                            name="arrow-left"
+                            size={26}
+                            color="white"
+                          />
+                        </TouchableOpacity>
+                        <View>
+                          <Text style={styles.styleTitleWeek}>
+                            {"Gráficas"}
                           </Text>
                         </View>
-                        <View
-                          style={styles.containerAmountPromedioGastoSemanal}
+                        <TouchableOpacity
+                          style={[styles.viewArrows, { marginTop: 0 }]}
+                          onPress={() => setEstadisticas(!estadisticas)}
                         >
-                          <Text
-                            style={styles.styleAmountPromedioGastoSemanal}
-                          ></Text>
+                          <FontAwesome
+                            name="arrow-right"
+                            size={26}
+                            color="white"
+                          />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View
+                        style={[styles.lineBalance, { marginBottom: 10 }]}
+                      />
+                      <View
+                        style={[
+                          styles.containerAllEstadistics,
+                          { paddingVertical: 10 },
+                        ]}
+                      >
+                        <View style={styles.containerChart}>
+                          <VictoryChart
+                            theme={VictoryTheme.material}
+                            domainPadding={20}
+                            width={320}
+                            height={330}
+                          >
+                            <VictoryBar
+                              barRatio={0.8}
+                              style={{
+                                data: {
+                                  fill: ({ datum }) =>
+                                    datum.y > 100 && datum.y < 200
+                                      ? colors.blue_2
+                                      : datum.y > 200
+                                      ? colors.blue_1
+                                      : colors.blue_3,
+                                },
+                              }}
+                              data={dataGraphics}
+                              labels={({ datum }) => `$${datum.y}`}
+                              labelComponent={<VictoryLabel dy={-10} />}
+                              cornerRadius={{ top: 3 }}
+                            />
+                          </VictoryChart>
+                        </View>
+                        <View style={styles.containerVictoryPie}>
+                          <VictoryPie
+                            colorScale={[
+                              "#044C7C",
+                              "#0B6E9C",
+                              "#0F8FB8",
+                              "#13A1D4",
+                              "#17C0EB",
+                              "#1CD9FF",
+                              "#1CD9FF",
+                            ]}
+                            data={dataGraphics}
+                            width={250}
+                            height={250}
+                            innerRadius={40}
+                            style={{
+                              labels: {
+                                fontSize: 15,
+                                fill: "white",
+                                fontWeight: "bold",
+                              },
+                            }}
+                          />
+
+                          <VictoryLegend
+                            orientation="horizontal"
+                            data={[
+                              { name: "Lun", symbol: { fill: "#044C7C" } },
+                              { name: "Mar", symbol: { fill: "#0B6E9C" } },
+                              {
+                                name: "Mié",
+                                symbol: { fill: "#0F8FB8" },
+                              },
+                              { name: "Jue", symbol: { fill: "#13A1D4" } },
+                              { name: "Vie", symbol: { fill: "#17C0EB" } },
+                              { name: "Sáb", symbol: { fill: "#1CD9FF" } },
+                              { name: "Dom", symbol: { fill: "#1CD9FF" } },
+                            ]}
+                            colorScale={[
+                              "#044C7C",
+                              "#0B6E9C",
+                              "#0F8FB8",
+                              "#13A1D4",
+                              "#17C0EB",
+                              "#1CD9FF",
+                              "#1CD9FF",
+                            ]}
+                            style={{
+                              labels: {
+                                fontSize: 12,
+                              },
+                              title: { fontSize: 20 },
+                            }}
+                            height={130}
+                            title="Días"
+                            centerTitle
+                            gutter={20}
+                            x={110}
+                            borderPadding={{ top: 0, bottom: 0 }}
+                            itemsPerRow={3}
+                          />
                         </View>
                       </View>
                     </View>
-
-                    {/*Comparacion Gasto Semanal*/}
-
-                    <View style={styles.containerComparacionGastoSemanal}>
-                      <View
-                        style={styles.containerTitleComparacionGastoSemanal}
+                  </>
+                ) : (
+                  <View style={styles.containerEstadisticas}>
+                    <View style={{ flexDirection: "row" }}>
+                      <TouchableOpacity
+                        style={[styles.viewArrows, { marginTop: 0 }]}
+                        onPress={() => setEstadisticas(!estadisticas)}
                       >
-                        <Text style={styles.styleTitleComparacionGastoSemanal}>
-                          Comparacion con la semana anterior
+                        <FontAwesome
+                          name="arrow-left"
+                          size={26}
+                          color="white"
+                        />
+                      </TouchableOpacity>
+                      <View>
+                        <Text style={styles.styleTitleWeek}>
+                          {"Estadísticas"}
                         </Text>
                       </View>
-                      <View>
+                      <TouchableOpacity
+                        style={[styles.viewArrows, { marginTop: 0 }]}
+                        onPress={() => setEstadisticas(!estadisticas)}
+                      >
+                        <FontAwesome
+                          name="arrow-right"
+                          size={26}
+                          color="white"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.lineBalance, { marginBottom: 10 }]} />
+                    <View style={styles.containerAllEstadistics}>
+                      <View style={styles.containerPromedioGastoSemanal}>
+                        <View style={styles.containerIconPromedioGastoSemanal}>
+                          <Fontisto
+                            name="bar-chart"
+                            size={34}
+                            color="#044C7C"
+                          />
+                        </View>
+                        <View
+                          style={styles.containerAllTextPromedioGastoSemanal}
+                        >
+                          <View
+                            style={styles.containerTitlePromedioGastoSemanal}
+                          >
+                            <Text style={styles.styleTitlePromedioGastoSemanal}>
+                              Promedio de gasto semanal
+                            </Text>
+                          </View>
+                          <View
+                            style={styles.containerAmountPromedioGastoSemanal}
+                          >
+                            <Text
+                              style={styles.styleAmountPromedioGastoSemanal}
+                            >
+                              {`$${simpleFormat(week.stadisticInfo.avgWeek)}`}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {/*Comparacion Gasto Semanal*/}
+
+                      <View style={styles.containerComparacionGastoSemanal}>
+                        <View style={styles.containerIconPromedioGastoSemanal}>
+                          <Fontisto
+                            name="bar-chart"
+                            size={34}
+                            color="#044C7C"
+                          />
+                        </View>
                         <View
                           style={styles.containerAllTextComparacionGastoSemanal}
                         >
+                          <View
+                            style={styles.containerTitleComparacionGastoSemanal}
+                          >
+                            <Text
+                              style={styles.styleTitleComparacionGastoSemanal}
+                            >
+                              Comparacion con la semana anterior
+                            </Text>
+                          </View>
                           <View
                             style={
                               styles.containerAmountComparacionGastoSemanal
@@ -224,41 +432,21 @@ const Weeks = () => {
                           >
                             <Text
                               style={styles.styleAmountComparacionGastoSemanal}
-                            ></Text>
+                            >
+                              {`$${week.stadisticInfo.vsLastWeek}`}
+                            </Text>
                           </View>
                         </View>
                       </View>
                     </View>
-                    <View style={styles.containerChart}>
-                      <VictoryChart
-                        theme={VictoryTheme.material}
-                        domainPadding={20}
-                        width={350}
-                        height={350}
-                      >
-                        <VictoryBar
-                          style={{ data: { fill: "#044C7C" } }}
-                          data={[
-                            { x: "Lunes", y: 1320 },
-                            { x: "Martes", y: 230 },
-                            { x: "Miercoles", y: 310 },
-                            { x: "Jueves", y: 438 },
-                            { x: "Viernes", y: 260 },
-                            { x: "Sabado", y: 0 },
-                            { x: "Domingo", y: 0 },
-                          ]}
-                          labels={({ datum }) => `$${datum.y}`}
-                          labelComponent={<VictoryLabel dy={-10} />}
-                        />
-                      </VictoryChart>
-                    </View>
                   </View>
-                </View>
+                )}
+                <View style={styles.containerAllEstadisticas}></View>
               </>
             )}
           </>
         )}
-      </>
+      </ScrollView>
     </AnalyticsContainer>
   );
 };
@@ -308,7 +496,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 40,
     borderRadius: 20,
     alignSelf: "center",
     backgroundColor: "#76BCD0",
@@ -317,15 +505,13 @@ const styles = StyleSheet.create({
   },
   containerAllEstadisticas: {
     height: "auto",
-    width: "80%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 30,
     borderRadius: 20,
     alignSelf: "center",
     paddingTop: 10,
-    paddingBottom: 10,
   },
   containerEstadisticas: {
     height: "auto",
@@ -335,7 +521,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: "center",
     paddingTop: 10,
-    paddingBottom: 10,
     flexDirection: "column",
   },
   containerTitleEstadisticas: {
@@ -344,27 +529,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    marginBottom: 40,
   },
   styleTitleEstadisticas: {
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#fff",
     textAlign: "center",
   },
+  containerAllEstadistics: {
+    height: "auto",
+    width: "85%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    borderRadius: 20,
+    alignSelf: "center",
+    backgroundColor: "#76BCD0",
+    paddingVertical: 20,
+  },
   containerPromedioGastoSemanal: {
     height: "auto",
-    width: "100%",
+    width: "85%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
     marginBottom: 20,
-    paddingVertical: "10%",
+    paddingVertical: 20,
     paddingHorizontal: "9%",
     borderRadius: 20,
     elevation: 5,
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: colors.white_1,
   },
   containerIconPromedioGastoSemanal: {
     height: "auto",
@@ -387,7 +582,7 @@ const styles = StyleSheet.create({
   },
   containerTitlePromedioGastoSemanal: {
     height: "auto",
-    width: "70%",
+    width: "auto",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
@@ -407,7 +602,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#2584A0",
     paddingVertical: "5%",
-    paddingHorizontal: "7%",
+    paddingHorizontal: 10,
     borderRadius: 10,
     elevation: 5,
     marginTop: 10,
@@ -420,24 +615,27 @@ const styles = StyleSheet.create({
   },
   containerComparacionGastoSemanal: {
     height: "auto",
-    width: "100%",
+    width: "85%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    marginBottom: 20,
-    paddingVertical: "10%",
+    paddingVertical: 20,
     paddingHorizontal: "9%",
     borderRadius: 20,
     elevation: 5,
-    backgroundColor: "#fff",
+    flexDirection: "row",
+    backgroundColor: colors.white_1,
   },
   containerIconComparacionGastoSemanal: {
     height: "auto",
-    width: "20%",
+    width: "auto",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "#fff",
+    elevation: 5,
+    padding: "5%",
+    borderRadius: 10,
   },
   containerAllTextComparacionGastoSemanal: {
     height: "auto",
@@ -449,7 +647,7 @@ const styles = StyleSheet.create({
   },
   containerTitleComparacionGastoSemanal: {
     height: "auto",
-    width: "70%",
+    width: "80%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
@@ -462,13 +660,13 @@ const styles = StyleSheet.create({
   },
   containerAmountComparacionGastoSemanal: {
     height: "auto",
-    width: "60%",
+    width: "auto",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "#2584A0",
     paddingVertical: "5%",
-    paddingHorizontal: "7%",
+    paddingHorizontal: 10,
     borderRadius: 10,
     elevation: 5,
     marginTop: 10,
@@ -481,14 +679,24 @@ const styles = StyleSheet.create({
   },
   containerChart: {
     height: "auto",
-    width: "100%",
+    width: "85%",
+    alignItems: "center",
+    alignSelf: "center",
+    paddingTop: -20,
+    paddingLeft: 30,
+    borderRadius: 20,
+    marginVertical: 20,
+    elevation: 5,
+    backgroundColor: "#fff",
+  },
+  containerVictoryPie: {
+    height: "auto",
+    width: "85%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    marginBottom: 20,
-    paddingVertical: "10%",
-    paddingHorizontal: "9%",
     borderRadius: 20,
+    marginVertical: 20,
     elevation: 5,
     backgroundColor: "#fff",
   },
