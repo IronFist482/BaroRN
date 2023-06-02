@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Baro",
-    "slug": "Baro",
+    "slug": "barorn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/iconBaroRN.png",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -27,6 +29,12 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "395d8494-2d56-4a00-88d7-a08d9175e447"
+      }
+    },
+    "owner": "cernaian5"
   }
 }
