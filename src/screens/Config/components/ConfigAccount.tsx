@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useCallback } from "react";
 import {
   Text,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   ScrollView,
+  Alert,
 } from "react-native";
 import { colors } from "@utils/colors";
 import { FontAwesome } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ import { useState } from "react";
 import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "@store/index";
+import { CleanAccount, DeleteAccount, EditProfile } from "@api/UserServices";
 
 const ConfigAccount = ({ section }: { section: Function }) => {
   const [modal, setModal] = useState<boolean>(false);
@@ -39,6 +41,54 @@ const ConfigAccount = ({ section }: { section: Function }) => {
     setModal2(visible);
     setNumberInfoModal(numberInfo);
   };
+
+  const handleClearAccount = useCallback(async () => {
+    Alert.alert(
+      "Limpiar Cuenta",
+      "¿Estas seguro de querer limpiar tu cuenta? Esta acción no es reversible",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => Alert.alert("Cancelado", "La acción fue cancelada"),
+          style: "cancel",
+        },
+        {
+          text: "Limpiar",
+          style: "destructive",
+        },
+      ]
+    );
+
+    const { data, message, ok } = await CleanAccount();
+    if (!ok || !data) {
+      return Alert.alert("Error", message);
+    }
+    Alert.alert("Exito", message);
+  }, []);
+
+  const handleDeleteAccount = useCallback(async () => {
+    Alert.alert(
+      "Eliminar Cuenta",
+      "¿Estas seguro de querer eliminar tu cuenta? Esta acción no es reversible",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => Alert.alert("Cancelado", "La acción fue cancelada"),
+          style: "cancel",
+        },
+        {
+          text: "Limpiar",
+          style: "destructive",
+        },
+      ]
+    );
+
+    const { data, message, ok } = await CleanAccount();
+    if (!ok || !data) {
+      return Alert.alert("Error", message);
+    }
+    Alert.alert("Exito", message);
+  }, []);
 
   return (
     <>
@@ -68,11 +118,15 @@ const ConfigAccount = ({ section }: { section: Function }) => {
         </TouchableOpacity>
 
         <View style={[styles.containerButtons, { marginTop: 50 }]}>
-          <TouchableOpacity style={styles.containerButton}>
+          <TouchableOpacity
+            style={styles.containerButton}
+            onPress={handleClearAccount}
+          >
             <Text style={styles.styleButton}>Limpiar</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.containerButton, { backgroundColor: colors.blue_1 }]}
+            onPress={handleDeleteAccount}
           >
             <Text style={styles.styleButton}>Eliminar</Text>
           </TouchableOpacity>

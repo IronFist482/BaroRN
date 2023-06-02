@@ -326,7 +326,7 @@ const Weeks = () => {
                             ]}
                             style={{
                               labels: {
-                                fontSize: 12,
+                                fontSize: 14,
                               },
                               title: { fontSize: 20 },
                             }}
@@ -334,7 +334,7 @@ const Weeks = () => {
                             title="Días"
                             centerTitle
                             gutter={20}
-                            x={110}
+                            x={97}
                             borderPadding={{ top: 0, bottom: 0 }}
                             itemsPerRow={3}
                           />
